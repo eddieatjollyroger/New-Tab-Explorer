@@ -18,11 +18,16 @@ function groupTabsByDomain(tabs) {
 function createTabElement(tab) {
   const el = document.createElement('div');
   el.className = 'tab';
-  el.draggable = true; // For native drag (optional)
+  el.draggable = true;
   el.dataset.title = (tab.title || '').toLowerCase();
   el.dataset.url = tab.url.toLowerCase();
 
-  el.addEventListener('click', () => {
+  // Click to activate
+  el.addEventListener('click', (e) => {
+    // Avoid triggering when clicking the button
+    if (e.target.classList.contains('close-btn') || e.target.classList.contains('pin-btn')) {
+      return;
+    }
     browser.tabs.update(tab.id, { active: true });
   });
 
@@ -33,19 +38,53 @@ function createTabElement(tab) {
 
   const title = document.createElement('span');
   title.textContent = tab.title || tab.url;
+  title.style.flex = '1';
+
+  const pinBtn = document.createElement('button');
+  pinBtn.textContent = tab.pinned ? '[UNPIN]' : '[PIN]';
+  pinBtn.className = 'pin-btn';
+  pinBtn.style.marginLeft = '0.5em';
+  pinBtn.style.background = 'transparent';
+  pinBtn.style.border = 'none';
+  pinBtn.style.color = '#0f0';
+  pinBtn.style.font = 'inherit';
+  pinBtn.style.cursor = 'pointer';
+  pinBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    browser.tabs.update(tab.id, { pinned: !tab.pinned });
+    // Refresh the UI after pin change
+    refreshTabs();
+  });
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '[X]';
+  closeBtn.className = 'close-btn';
+  closeBtn.style.marginLeft = '0.5em';
+  closeBtn.style.background = 'transparent';
+  closeBtn.style.border = 'none';
+  closeBtn.style.color = '#f00';
+  closeBtn.style.font = 'inherit';
+  closeBtn.style.cursor = 'pointer';
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    browser.tabs.remove(tab.id);
+    el.remove(); // Remove element instantly
+  });
 
   el.appendChild(icon);
   el.appendChild(title);
+  el.appendChild(pinBtn);
+  el.appendChild(closeBtn);
   return el;
 }
 
-function renderTabs(groups) {
+function renderTabs(groups, open) { //open is the parameter that decides if the parent folders details will be open or closed on render
   const container = document.getElementById('tabs');
   container.innerHTML = '';
 
   for (const domain in groups) {
     const details = document.createElement('details');
-    details.open = false;
+    details.open = open;
 
     const summary = document.createElement('summary');
     summary.textContent = domain;
@@ -72,6 +111,14 @@ function renderTabs(groups) {
   }
 }
 
+function refreshTabs() {
+  browser.tabs.query({}).then((tabs) => {
+    allTabs = tabs;
+    const grouped = groupTabsByDomain(tabs);
+    renderTabs(grouped, true); // Renders tabs without closing the details
+  });
+}
+
 // CLOCK
 function updateClock() {
   const clock = document.getElementById('clock');
@@ -91,7 +138,7 @@ browser.tabs.query({})
   .then((tabs) => {
     allTabs = tabs;
     const grouped = groupTabsByDomain(tabs);
-    renderTabs(grouped);
+    renderTabs(grouped, false); // Renders tabs with details closed
   });
 
 // SEARCH
@@ -109,6 +156,7 @@ document.getElementById('search').addEventListener('input', (e) => {
       el.style.display = 'none';
     }
 
+    //If empty query close all folders
     if(!query){
       el.parentNode.parentNode.open = false;
     }

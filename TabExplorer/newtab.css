@@ -38,7 +38,10 @@
     summary {
       cursor: pointer;
       font-size: 12px;
+      margin: -2em;
+      padding: 2em;
     }
+
       #tabs {
       display: flex;
       flex-direction: column;
@@ -50,6 +53,7 @@
       user-select: none;
     }
     .tab {
+      font-size: 14px;
       display: flex;
       align-items: center;
       padding: 0.25em 0.5em;
@@ -61,8 +65,8 @@
       background: #030;
     }
     .favicon {
-      width: 16px;
-      height: 16px;
+      width: 13px;
+      height: 13px;
       margin-right: 0.5em;
       image-rendering: pixelated;
     }
