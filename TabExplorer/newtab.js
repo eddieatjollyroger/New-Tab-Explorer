@@ -20,7 +20,8 @@ function createTabElement(tab) {
   el.className = 'tab';
   el.draggable = true;
   el.dataset.title = (tab.title || '').toLowerCase();
-  el.dataset.url = tab.url.toLowerCase();
+  el.dataset.url = tab.url;
+  el.dataset.favIconUrl = tab.favIconUrl;
 
   // Click to activate
   el.addEventListener('click', (e) => {
@@ -37,7 +38,7 @@ function createTabElement(tab) {
   icon.alt = '';
 
   const title = document.createElement('span');
-  title.textContent = tab.title || tab.url;
+  title.textContent = tab.title.toLowerCase() || tab.url;
   title.style.flex = '1';
 
   const pinBtn = document.createElement('button');
@@ -162,3 +163,101 @@ document.getElementById('search').addEventListener('input', (e) => {
     }
   }
 });
+
+// Save groups to storage
+document.getElementById('save').addEventListener('click', () => {
+  const groups = {};
+  const detailsEls = document.querySelectorAll('#tabs > details');
+  detailsEls.forEach((details) => {
+    const domain = details.querySelector('summary').textContent;
+    domain.favIconUrl = details.querySelector('summary');
+    const tabs = [];
+    details.querySelectorAll('.tab').forEach((tabEl) => {
+      tabs.push({
+        url: tabEl.dataset.url,
+        title: tabEl.dataset.title,
+        favIconUrl: tabEl.dataset.favIconUrl
+      });
+    });
+    groups[domain] = tabs;
+  });
+
+  browser.storage.local.set({ savedGroups: groups }).then(() => {
+    alert('Groups saved!');
+  });
+});
+
+// Load groups from storage
+document.getElementById('load').addEventListener('click', () => {
+  browser.storage.local.get('savedGroups').then((data) => {
+    if (data.savedGroups) {
+      renderSavedGroups(data.savedGroups);
+    } else {
+      alert('No saved groups found.');
+    }
+  });
+});
+
+// Render saved groups (URLs only, since IDs are stale)
+function renderSavedGroups(savedGroups) {
+  const container = document.getElementById('tabs');
+  container.innerHTML = '';
+
+  for (const domain in savedGroups) {
+    const details = document.createElement('details');
+    details.open = true;
+
+    const summary = document.createElement('summary');
+    summary.textContent = domain;
+
+    const icon = document.createElement('img');
+    icon.className = 'favicon';
+    icon.src = savedGroups[domain][0].favIconUrl || 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo-md.3f5f8412e4b0.png';
+    icon.alt = '';  
+    summary.prepend(icon);
+
+
+    details.appendChild(summary);
+
+    const tabList = document.createElement('div');
+    tabList.className = 'tab-list';
+
+    for (const saved of savedGroups[domain]) {
+      const el = document.createElement('div');
+      el.className = 'tab';
+      el.dataset.title = saved.title;
+      el.dataset.url = saved.url;
+
+      const icon = document.createElement('img');
+      icon.className = 'favicon';
+      icon.src = savedGroups[domain][0].favIconUrl || 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo-md.3f5f8412e4b0.png';
+      icon.alt = '';
+
+      const title = document.createElement('span');
+      title.textContent = saved.title || saved.url;
+      title.style.flex = '1';
+
+      const openBtn = document.createElement('button');
+      openBtn.textContent = '[OPEN]';
+      openBtn.style.marginLeft = '0.5em';
+      openBtn.style.background = 'transparent';
+      openBtn.style.border = 'none';
+      openBtn.style.color = '#0f0';
+      openBtn.style.font = 'inherit';
+      openBtn.style.cursor = 'pointer';
+      openBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        browser.tabs.create({ url: saved.url });
+      });
+
+      el.appendChild(icon);
+      el.appendChild(title);
+      el.appendChild(openBtn);
+
+      tabList.appendChild(el);
+    }
+
+    details.appendChild(tabList);
+    container.appendChild(details);
+  }
+}
