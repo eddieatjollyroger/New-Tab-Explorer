@@ -37,6 +37,11 @@ button, input {
       margin-bottom: 1em;
       text-align: center;
     }
+    h2{
+            font-size: 13px;
+      margin-bottom: 1em;
+      text-align: center;
+    }
     details {
       background: #111;
       border: 2px solid currentColor;
@@ -48,9 +53,17 @@ button, input {
         #clock {
       font-size: 82px;
       margin-top: 1em;
-      margin-bottom: 1em;
       text-align: center;
     }
+
+    #button-grid{
+      display: flex;
+      flex-direction: row;
+      align-items:flex-start;
+      justify-content: center;
+      margin-bottom: 3px;
+    }
+
     .highlight {
   background: none;
   color: red;
@@ -62,7 +75,7 @@ button, input {
       font-family: inherit;
       font-size: 12px;
       padding: 0.5em;
-      margin-bottom: 3em;
+      margin-bottom: 2em;
       background: #111;
       border: 3px solid currentColor;
       color: currentColor;
