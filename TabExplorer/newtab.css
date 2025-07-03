@@ -1,0 +1,59 @@
+
+    body {
+      font-family: "Press Start 2P", cursive;
+      background: #000;
+      color: #0f0;
+      margin: 0;
+      padding: 1em;
+    }
+    h1 {
+      font-size: 16px;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+    details {
+      background: #111;
+      border: 2px solid #0f0;
+      border-radius: 4px;
+      margin-bottom: 0.5em;
+      margin-left: 0.5em;
+      padding: 0.5em;
+    }
+    summary {
+      cursor: pointer;
+      font-size: 12px;
+    }
+      #tabs {
+      display: flex;
+      flex-direction: column;
+      flex-flow: row wrap;
+      align-items:flex-start;
+      padding: 0.25em 0.5em;
+      margin: auto;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tab {
+      display: flex;
+      align-items: center;
+      padding: 0.25em 0.5em;
+      margin-left: 1em;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tab:hover {
+      background: #030;
+    }
+    .favicon {
+      width: 16px;
+      height: 16px;
+      margin-right: 0.5em;
+      image-rendering: pixelated;
+    }
+    .sortable-ghost {
+      opacity: 0.3;
+    }   
+     @media (max-width: 800px) {
+    #tabs {
+    flex-direction: column;
+  }}
