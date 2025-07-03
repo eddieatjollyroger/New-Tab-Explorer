@@ -1,3 +1,19 @@
+const themeSelect = document.getElementById('themeSelect');
+
+// Load theme from storage
+browser.storage.local.get('theme').then(({ theme }) => {
+  const selected = theme || 'green';
+  document.body.className = 'theme-' + selected;
+  themeSelect.value = selected;
+});
+
+// Theme change handler
+themeSelect.addEventListener('change', () => {
+  const theme = themeSelect.value;
+  document.body.className = 'theme-' + theme;
+  browser.storage.local.set({ theme });
+});
+
 function groupTabsByDomain(tabs) {
   const groups = {};
   for (const tab of tabs) {
@@ -47,7 +63,7 @@ function createTabElement(tab) {
   pinBtn.style.marginLeft = '0.5em';
   pinBtn.style.background = 'transparent';
   pinBtn.style.border = 'none';
-  pinBtn.style.color = '#0f0';
+  pinBtn.style.color = 'inherit';
   pinBtn.style.font = 'inherit';
   pinBtn.style.cursor = 'pointer';
   pinBtn.addEventListener('click', (e) => {
@@ -164,6 +180,14 @@ document.getElementById('search').addEventListener('input', (e) => {
   }
 });
 
+document.getElementById('collapseAll').addEventListener('click', () => {
+  document.querySelectorAll('#tabs > details').forEach(el => el.open = false);
+});
+
+document.getElementById('expandAll').addEventListener('click', () => {
+  document.querySelectorAll('#tabs > details').forEach(el => el.open = true);
+});
+
 // Save groups to storage
 document.getElementById('save').addEventListener('click', () => {
   const groups = {};
@@ -260,4 +284,5 @@ function renderSavedGroups(savedGroups) {
     details.appendChild(tabList);
     container.appendChild(details);
   }
+  
 }

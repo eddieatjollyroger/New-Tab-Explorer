@@ -6,6 +6,31 @@
       margin: 0;
       padding: 1em;
     }
+    body.theme-green {
+  background-color: #000;
+  color: #0f0;
+}
+
+body.theme-amber {
+  background-color: #000;
+  color: #ffbf00;
+}
+
+body.theme-blue {
+  background-color: #000;
+  color: #00bfff;
+}
+
+button, input {
+  background: transparent;
+  color: currentColor;
+  border: 2px solid currentColor;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
     h1 {
       font-size: 16px;
       margin-bottom: 1em;
@@ -13,7 +38,7 @@
     }
     details {
       background: #111;
-      border: 2px solid #0f0;
+      border: 2px solid currentColor;
       border-radius: 4px;
       margin-bottom: 0.5em;
       margin-left: 0.5em;
@@ -32,8 +57,8 @@
       padding: 0.5em;
       margin-bottom: 2em;
       background: #111;
-      border: 2px solid #0f0;
-      color: #0f0;
+      border: 2px solid currentColor;
+      color: currentColor;
     }
     summary {
       cursor: pointer;
@@ -62,7 +87,7 @@
       user-select: none;
     }
     .tab:hover {
-      background: #030;
+      background: black;
     }
     .favicon {
       width: 13px;
