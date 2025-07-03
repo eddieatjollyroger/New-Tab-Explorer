@@ -19,6 +19,22 @@
       margin-left: 0.5em;
       padding: 0.5em;
     }
+        #clock {
+      font-size: 64px;
+      margin-top: 2em;
+      margin-bottom: 2em;
+      text-align: center;
+    }
+    #search {
+      width: 98.3%;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 0.5em;
+      margin-bottom: 2em;
+      background: #111;
+      border: 2px solid #0f0;
+      color: #0f0;
+    }
     summary {
       cursor: pointer;
       font-size: 12px;
