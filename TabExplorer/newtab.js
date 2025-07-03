@@ -14,6 +14,9 @@ themeSelect.addEventListener('change', () => {
   browser.storage.local.set({ theme });
 });
 
+
+
+
 function groupTabsByDomain(tabs) {
   const groups = {};
   for (const tab of tabs) {
@@ -104,7 +107,7 @@ function renderTabs(groups, open) { //open is the parameter that decides if the 
     details.open = open;
 
     const summary = document.createElement('summary');
-    summary.textContent = domain;
+    summary.textContent = `${domain} (${groups[domain].length} tab${groups[domain].length !== 1 ? 's' : ''})`;
 
     const icon = document.createElement('img');
     icon.className = 'favicon';
@@ -284,5 +287,37 @@ function renderSavedGroups(savedGroups) {
     details.appendChild(tabList);
     container.appendChild(details);
   }
-  
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.key === '[') {
+    document.querySelectorAll('#tabs > details').forEach(el => el.open = false);
+    playClick();
+  } else if (e.key === ']') {
+    document.querySelectorAll('#tabs > details').forEach(el => el.open = true);
+    playClick();
+  } else if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault();
+    document.getElementById('search').focus();
+    playClick();
+  } else if (e.key === 't' || e.key === 'T') {
+    cycleTheme();
+    playBeep();
+  } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+    document.getElementById('save').click();
+  } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+    document.getElementById('load').click();
+  }
+});
+
+// Cycle through themes
+function cycleTheme() {
+  const themes = ['green', 'amber', 'blue'];
+  let current = themeSelect.value;
+  let next = themes[(themes.indexOf(current) + 1) % themes.length];
+  themeSelect.value = next;
+  document.body.className = 'theme-' + next;
+  browser.storage.local.set({ theme: next });
 }

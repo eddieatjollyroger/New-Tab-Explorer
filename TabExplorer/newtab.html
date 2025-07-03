@@ -7,22 +7,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <select id="themeSelect">
-  <option value="green">CRT Green</option>
-  <option value="amber">Amber</option>
-  <option value="blue">Blue</option>
-</select>
+<div id="scanlines"></div>
+  <div class="selectWrapper">
+  <select id="themeSelect">
+    <option value="green">CRT Green</option>
+    <option value="amber">Amber</option>
+    <option value="blue">Blue</option>
+  </select>
+</div>
   <h1>TAB EXPLORER</h1>
 
   <div id="clock"></div>
-  <input type="text" id="search" placeholder="SEARCH...">
+  <input type="text" id="search" placeholder="PRESS / TO SEARCH YOUR TABS AND THE WEB">
   <div id="button-grid">
-  <button id="save" style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:0.5em;background:#111;cursor:pointer;">[SAVE GROUPS]</button>
-  <button id="load" style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;">[LOAD GROUPS]</button>
-  <button id="collapseAll"style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;">[COLLAPSE ALL]</button>
-  <button id="expandAll"style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;">[EXPAND ALL]</button>
+  <button id="save" style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:0.5em;background:#111;cursor:pointer;">SAVE GROUPS (Ctrl + Shift + S)</button>
+  <button id="load" style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;">LOAD GROUPS (Ctrl + Shift + L)</button>
+  <button id="collapseAll"style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;"> COLLAPSE ALL ([)</button>
+  <button id="expandAll"style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;">EXPAND ALL (])</button>
   </div>
   <div id="tabs"></div>
   <script src="newtab.js"></script>
+  <h3 style="margin: 1EM; text-align: center;">PRESS T TO SWITCH COLOR THEME</h1>
 </body>
 </html>

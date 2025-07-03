@@ -21,6 +21,7 @@ body.theme-blue {
   color: #00bfff;
 }
 
+
 button, input {
   background: transparent;
   color: currentColor;
@@ -45,20 +46,27 @@ button, input {
       padding: 0.5em;
     }
         #clock {
-      font-size: 64px;
-      margin-top: 2em;
-      margin-bottom: 2em;
+      font-size: 82px;
+      margin-top: 1em;
+      margin-bottom: 1em;
       text-align: center;
     }
+    .highlight {
+  background-color: currentColor;
+  color: black;
+  padding: 0 1px;
+  font-weight: bold;
+}
     #search {
       width: 98.3%;
       font-family: inherit;
       font-size: 12px;
       padding: 0.5em;
-      margin-bottom: 2em;
+      margin-bottom: 3em;
       background: #111;
-      border: 2px solid currentColor;
+      border: 3px solid currentColor;
       color: currentColor;
+      text-align: center;
     }
     summary {
       cursor: pointer;
@@ -95,9 +103,54 @@ button, input {
       margin-right: 0.5em;
       image-rendering: pixelated;
     }
-    .sortable-ghost {
-      opacity: 0.3;
-    }   
+    #themeSelect {
+  appearance: none;
+  background: #000;
+  border: 2px solid currentColor;
+  color: inherit;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+  width: 160px;
+  position: relative;
+}
+
+#themeSelect:focus {
+  outline: none;
+  border-color: #fff;
+}
+
+#themeSelect option {
+  background: #000;
+  color: inherit;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+#scanlines {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0px,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,0,0.05) 2px,
+    rgba(0,0,0,0.05) 4px
+  );
+  animation: scroll 1s linear infinite;
+  z-index: 9998;
+}
+
+@keyframes scroll {
+  0% { background-position-y: 0; }
+  100% { background-position-y: 4px; }
+}
+
      @media (max-width: 800px) {
     #tabs {
     flex-direction: column;
