@@ -164,23 +164,70 @@ browser.tabs.query({})
 // SEARCH
 document.getElementById('search').addEventListener('input', (e) => {
   const query = e.target.value.trim().toLowerCase();
+  const allGroups = document.querySelectorAll('#tabs > details');
 
-  const allTabEls = document.querySelectorAll('.tab');
-  for (const el of allTabEls) {
-    const title = el.dataset.title;
-    const url = el.dataset.url;
-    if (title.includes(query) || url.includes(query)) {
-      el.style.display = '';
-      el.parentNode.parentNode.open = true;
+  allGroups.forEach(details => {
+    const tabList = details.querySelector('.tab-list');
+    const tabs = Array.from(tabList.querySelectorAll('.tab'));
+
+    // If query is empty, reset everything
+    if (!query) {
+      tabs.forEach(tab => {
+        tab.style.display = '';
+        // Restore original title if highlight was applied
+        const titleEl = tab.querySelector('span');
+        const original = titleEl.dataset.original;
+        if (original) {
+          titleEl.textContent = original;
+          delete titleEl.dataset.original;
+        }
+      });
+      details.style.display = '';
+      details.open = false;
+      return;
+    }
+
+    // Filter matching tabs
+    const matchingTabs = tabs.filter(tab => {
+      const title = tab.dataset.title || '';
+      const url = tab.dataset.url || '';
+      return title.includes(query) || url.includes(query);
+    });
+
+    // Hide all tabs initially
+    tabs.forEach(tab => {
+      tab.style.display = 'none';
+    });
+
+    // Show and sort matching tabs
+    matchingTabs.sort((a, b) => {
+      const titleA = a.dataset.title;
+      const titleB = b.dataset.title;
+      return titleA.localeCompare(titleB);
+    });
+
+    matchingTabs.forEach(tab => {
+      tab.style.display = '';
+      tabList.appendChild(tab);
+
+      // Highlight match
+      const titleEl = tab.querySelector('span');
+      const rawTitle = titleEl.textContent;
+      if (!titleEl.dataset.original) {
+        titleEl.dataset.original = rawTitle;
+      }
+      const regex = new RegExp(`(${query})`, 'gi');
+      titleEl.innerHTML = rawTitle.replace(regex, '<span class="highlight">$1</span>');
+    });
+
+    // Show or hide the group
+    if (matchingTabs.length === 0) {
+      details.style.display = 'none';
     } else {
-      el.style.display = 'none';
+      details.style.display = '';
+      details.open = true;
     }
-
-    //If empty query close all folders
-    if(!query){
-      el.parentNode.parentNode.open = false;
-    }
-  }
+  });
 });
 
 document.getElementById('collapseAll').addEventListener('click', () => {
@@ -309,6 +356,17 @@ document.addEventListener('keydown', (e) => {
     document.getElementById('save').click();
   } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
     document.getElementById('load').click();
+  }
+});
+
+//STARTPAGE SEARCH
+document.getElementById('search').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const query = e.target.value.trim();
+    if (query) {
+      const url = 'https://www.startpage.com/do/dsearch?query=' + encodeURIComponent(query);
+      browser.tabs.create({ url });
+    }
   }
 });
 

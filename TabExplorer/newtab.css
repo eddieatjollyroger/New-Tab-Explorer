@@ -52,10 +52,10 @@ button, input {
       text-align: center;
     }
     .highlight {
-  background-color: currentColor;
-  color: black;
-  padding: 0 1px;
+  background: none;
+  color: red;
   font-weight: bold;
+  border-bottom: 3px dotted currentColor;
 }
     #search {
       width: 98.3%;
