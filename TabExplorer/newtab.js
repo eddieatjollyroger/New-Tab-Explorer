@@ -14,7 +14,21 @@ themeSelect.addEventListener('change', () => {
   browser.storage.local.set({ theme });
 });
 
-
+//Escape HTML
+function escapeHTML(str) {
+  return str.replace(/[&<>"'`=\/]/g, (s) => {
+    return ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+      '`': '&#x60;',
+      '=': '&#x3D;',
+      '/': '&#x2F;',
+    })[s];
+  });
+}
 
 
 function groupTabsByDomain(tabs) {
@@ -170,11 +184,9 @@ document.getElementById('search').addEventListener('input', (e) => {
     const tabList = details.querySelector('.tab-list');
     const tabs = Array.from(tabList.querySelectorAll('.tab'));
 
-    // If query is empty, reset everything
     if (!query) {
       tabs.forEach(tab => {
         tab.style.display = '';
-        // Restore original title if highlight was applied
         const titleEl = tab.querySelector('span');
         const original = titleEl.dataset.original;
         if (original) {
@@ -187,40 +199,44 @@ document.getElementById('search').addEventListener('input', (e) => {
       return;
     }
 
-    // Filter matching tabs
     const matchingTabs = tabs.filter(tab => {
       const title = tab.dataset.title || '';
       const url = tab.dataset.url || '';
       return title.includes(query) || url.includes(query);
     });
 
-    // Hide all tabs initially
     tabs.forEach(tab => {
       tab.style.display = 'none';
     });
 
-    // Show and sort matching tabs
     matchingTabs.sort((a, b) => {
       const titleA = a.dataset.title;
       const titleB = b.dataset.title;
       return titleA.localeCompare(titleB);
     });
 
+    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape for RegExp
+    const regex = new RegExp(`(${safeQuery})`, 'gi');
+
     matchingTabs.forEach(tab => {
       tab.style.display = '';
       tabList.appendChild(tab);
 
-      // Highlight match
       const titleEl = tab.querySelector('span');
-      const rawTitle = titleEl.textContent;
+      const rawTitle = titleEl.dataset.original || titleEl.textContent;
+
+      // Store original if not already stored
       if (!titleEl.dataset.original) {
         titleEl.dataset.original = rawTitle;
       }
-      const regex = new RegExp(`(${query})`, 'gi');
-      titleEl.innerHTML = rawTitle.replace(regex, '<span class="highlight">$1</span>');
+
+      // Escape HTML before highlighting
+      const escapedTitle = escapeHTML(rawTitle);
+      const highlighted = escapedTitle.replace(regex, '<span class="highlight">$1</span>');
+
+      titleEl.innerHTML = highlighted;
     });
 
-    // Show or hide the group
     if (matchingTabs.length === 0) {
       details.style.display = 'none';
     } else {
