@@ -327,6 +327,10 @@ document.getElementById('search').addEventListener('input', (e) => {
   const query = e.target.value.trim().toLowerCase();
   const allGroups = document.querySelectorAll('#tabs > details');
 
+  // HIDE QUICK SHORTCUTS ON SEARCH
+  const quickPanel = document.getElementById('quickAccess');
+  quickPanel.style.display = query ? 'none' : 'block';
+
   allGroups.forEach(details => {
     const tabList = details.querySelector('.tab-list');
     const tabs = Array.from(tabList.querySelectorAll('.tab'));

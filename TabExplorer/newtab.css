@@ -1,12 +1,12 @@
+body {
+  font-family: "Press Start 2P", cursive;
+  background: #000;
+  color: #0f0;
+  margin: 0;
+  padding: 1em;
+}
 
-    body {
-      font-family: "Press Start 2P", cursive;
-      background: #000;
-      color: #0f0;
-      margin: 0;
-      padding: 1em;
-    }
-    body.theme-green {
+body.theme-green {
   background-color: #000;
   color: #0f0;
 }
@@ -22,7 +22,8 @@ body.theme-blue {
 }
 
 
-button, input {
+button,
+input {
   background: #111;
   color: currentColor;
   border: 2px solid currentColor;
@@ -31,101 +32,114 @@ button, input {
   cursor: pointer;
   padding: 4px 8px;
 }
-button:hover {  
+
+button:hover {
   background: #222;
   border-color: #ff0;
 }
-    h1 {
-      font-size: 16px;
-      margin-bottom: 1em;
-      text-align: center;
-    }
-    h2{
-            font-size: 13px;
-      margin-bottom: 1em;
-      text-align: center;
-    }
-    details {
-      background: #111;
-      border: 2px solid currentColor;
-      border-radius: 4px;
-      margin-bottom: 0.5em;
-      margin-left: 0.5em;
-      padding: 0.5em;
-    }
-    details:hover {  
-      background: #222;
+
+h1 {
+  font-size: 16px;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+h2 {
+  font-size: 13px;
+  margin-bottom: 1em;
+  margin-top: 4em;
+  text-align: center;
+}
+
+details {
+  background: #111;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  margin-bottom: 0.5em;
+  margin-left: 0.5em;
+  padding: 0.5em;
+}
+
+details:hover {
+  background: #222;
   border-color: #ff0;
 }
-        #clock {
-      font-size: 82px;
-      margin-top: 1em;
-      margin-bottom: 1em;
-      text-align: center;
-    }
 
-    #button-grid{
-      display: flex;
-      flex-direction: row;
-      align-items:flex-start;
-      justify-content: center;
-      margin-bottom: 3px;
-    }
+#clock {
+  font-size: 82px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  text-align: center;
+}
 
-    .highlight {
+#button-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: 3px;
+}
+
+.highlight {
   background: none;
   color: red;
   font-weight: bold;
   border-bottom: 3px dotted currentColor;
 }
-    #search {
-      width: 98.3%;
-      font-family: inherit;
-      font-size: 12px;
-      padding: 0.5em;
-      margin-bottom: 2em;
-      background: #111;
-      border: 3px solid currentColor;
-      color: currentColor;
-      text-align: center;
-    }
-    summary {
-      cursor: pointer;
-      font-size: 14px;
-      margin: -2em;
-      padding: 2em;
-    }
 
-      #tabs {
-      display: flex;
-      flex-direction: column;
-      flex-flow: row wrap;
-      align-items:flex-start;
-      justify-content: center;
-      padding: 0.25em 0.5em;
-      margin: auto;
-      cursor: pointer;
-      user-select: none;
-    }
-    .tab {
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      padding: 0.25em 0.5em;
-      margin-left: 1em;
-      cursor: pointer;
-      user-select: none;
-    }
-    .tab:hover {
-      background: black;
-    }
-    .favicon {
-      width: 13px;
-      height: 13px;
-      margin-right: 0.5em;
-      image-rendering: pixelated;
-    }
-    #themeSelect {
+#search {
+  width: 98.3%;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 0.5em;
+  margin-bottom: 2em;
+  background: #111;
+  border: 3px solid currentColor;
+  color: currentColor;
+  text-align: center;
+}
+
+summary {
+  cursor: pointer;
+  font-size: 14px;
+  margin: -2em;
+  padding: 2em;
+}
+
+#tabs {
+  display: flex;
+  flex-direction: column;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0.25em 0.5em;
+  margin: auto;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tab {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0.25em 0.5em;
+  margin-left: 1em;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tab:hover {
+  background: black;
+}
+
+.favicon {
+  width: 13px;
+  height: 13px;
+  margin-right: 0.5em;
+  image-rendering: pixelated;
+}
+
+#themeSelect {
   appearance: none;
   background: #000;
   border: 2px solid currentColor;
@@ -150,6 +164,7 @@ button:hover {
   font-size: 12px;
   padding: 4px 8px;
 }
+
 #scanlines {
   pointer-events: none;
   position: fixed;
@@ -157,13 +172,11 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,0) 0px,
-    rgba(0,0,0,0) 2px,
-    rgba(0,0,0,0.05) 2px,
-    rgba(0,0,0,0.05) 4px
-  );
+  background: repeating-linear-gradient(to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.05) 2px,
+      rgba(0, 0, 0, 0.05) 4px);
   animation: scroll 1s linear infinite;
   z-index: 9998;
 }
@@ -193,6 +206,7 @@ button:hover {
   color: currentColor;
   cursor: pointer;
 }
+
 #quickAccess h3 button:hover {
   background: #222;
   border-color: #ff0;
@@ -210,7 +224,7 @@ button:hover {
   font-size: 1.1em;
   border-radius: 0.2em;
   position: relative;
-   user-select: none;
+  user-select: none;
 }
 
 .shortcut:hover {
@@ -229,7 +243,8 @@ button:hover {
 }
 
 .shortcut.edit-mode .deleteBtn {
-  display: inline;}
+  display: inline;
+}
 
 .shortcut input.edit-label,
 .shortcut input.edit-url {
@@ -242,12 +257,12 @@ button:hover {
 }
 
 #shortcutPanel {
-          display: flex;
-      flex-direction: column;
-      flex-flow: row wrap;
-      align-items:flex-start;
-      justify-content: center;
-      margin-bottom: 3px;
+  display: flex;
+  flex-direction: column;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: 3px;
   font-family: 'Press Start 2P', monospace;
 }
 
@@ -274,17 +289,19 @@ button:hover {
   width: 16px;
   height: 16px;
 }
+
 .shortcut img {
   image-rendering: pixelated;
   margin-right: 0.5em;
   width: 16px;
   height: 16px;
 }
+
 #shortcutInputs {
-      display: flex;
-      flex-direction: row;
-      align-items:flex-start;
-      justify-content: center;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 #shortcutInputs input {
@@ -312,11 +329,17 @@ button:hover {
 }
 
 @keyframes scroll {
-  0% { background-position-y: 0; }
-  100% { background-position-y: 4px; }
+  0% {
+    background-position-y: 0;
+  }
+
+  100% {
+    background-position-y: 4px;
+  }
 }
 
-     @media (max-width: 800px) {
-    #tabs {
+@media (max-width: 800px) {
+  #tabs {
     flex-direction: column;
-  }}
+  }
+}
