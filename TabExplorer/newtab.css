@@ -210,6 +210,7 @@ button:hover {
   font-size: 1.1em;
   border-radius: 0.2em;
   position: relative;
+   user-select: none;
 }
 
 .shortcut:hover {
@@ -229,6 +230,16 @@ button:hover {
 
 .shortcut.edit-mode .deleteBtn {
   display: inline;}
+
+.shortcut input.edit-label,
+.shortcut input.edit-url {
+  background: #222;
+  border: 1px solid currentColor;
+  color: currentColor;
+  font-size: 0.9em;
+  padding: 0.2em;
+  margin-right: 0.3em;
+}
 
 #shortcutPanel {
           display: flex;
@@ -263,7 +274,12 @@ button:hover {
   width: 16px;
   height: 16px;
 }
-
+.shortcut img {
+  image-rendering: pixelated;
+  margin-right: 0.5em;
+  width: 16px;
+  height: 16px;
+}
 #shortcutInputs {
       display: flex;
       flex-direction: row;

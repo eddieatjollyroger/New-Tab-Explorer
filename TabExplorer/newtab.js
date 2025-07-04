@@ -176,6 +176,7 @@ browser.tabs.query({})
   });
 
 // Load and display Quick Access shortcuts
+let isEditMode = false;
 function loadQuickShortcuts() {
   browser.storage.local.get('quickShortcuts').then(({ quickShortcuts }) => {
     const shortcuts = quickShortcuts || [];
@@ -185,28 +186,97 @@ function loadQuickShortcuts() {
     shortcuts.forEach((s, index) => {
       const btn = document.createElement('div');
       btn.className = 'shortcut';
-      btn.textContent = s.label;
+      if (isEditMode) {
+        btn.classList.add('edit-mode');
+      }
+      btn.draggable = true;
 
-            const icon = document.createElement('img');
+           const icon = document.createElement('img');
       icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
       icon.alt = '';
       btn.prepend(icon);
       
-      btn.addEventListener('click', () => {
-        window.open(s.url, '_blank');
-      });
+      // Label span
+      const labelSpan = document.createElement('span');
+      labelSpan.textContent = s.label;
+      btn.appendChild(labelSpan);
 
-      // Delete button inside
+      // Delete button
       const delBtn = document.createElement('button');
       delBtn.textContent = 'X';
       delBtn.className = 'deleteBtn';
       delBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // prevent opening URL
+        e.stopPropagation();
         shortcuts.splice(index, 1);
         browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
       });
-
       btn.appendChild(delBtn);
+
+      // Open on click
+      btn.addEventListener('click', () => {
+        if (!btn.classList.contains('edit-mode')) {
+          window.open(s.url, '_blank');
+        }
+      });
+
+      // Inline edit on double click (edit mode only)
+      btn.addEventListener('dblclick', (e) => {
+        if (!btn.classList.contains('edit-mode')) return;
+
+        e.stopPropagation();
+        btn.innerHTML = '';
+
+        const labelInput = document.createElement('input');
+        labelInput.className = 'edit-label';
+        labelInput.value = s.label;
+
+        const urlInput = document.createElement('input');
+        urlInput.className = 'edit-url';
+        urlInput.value = s.url;
+
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Save';
+        saveBtn.addEventListener('click', () => {
+          s.label = labelInput.value.trim();
+          s.url = urlInput.value.trim();
+          browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
+        });
+
+        btn.appendChild(labelInput);
+        btn.appendChild(urlInput);
+        btn.appendChild(saveBtn);
+      });
+
+      // Drag/drop handlers
+      btn.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', index);
+        btn.classList.add('dragging');
+      });
+      btn.addEventListener('dragend', () => {
+        btn.classList.remove('dragging');
+      });
+
+      btn.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        btn.style.border = '2px dashed #0f0';
+      });
+      btn.addEventListener('dragleave', () => {
+        btn.style.border = '';
+      });
+      btn.addEventListener('drop', (e) => {
+        e.preventDefault();
+        btn.style.border = '';
+
+        const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+        const toIndex = index;
+
+        if (fromIndex === toIndex) return;
+
+        const moved = shortcuts.splice(fromIndex, 1)[0];
+        shortcuts.splice(toIndex, 0, moved);
+        browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
+      });
+
       panel.appendChild(btn);
     });
   });
@@ -235,24 +305,23 @@ document.getElementById('addQuickShortcut').addEventListener('click', () => {
 
 // Toggle Edit mode
 document.getElementById('editShortcutsBtn').addEventListener('click', () => {
+  isEditMode = !isEditMode;
   const panel = document.getElementById('shortcutPanel');
   const shortcuts = panel.querySelectorAll('.shortcut');
   shortcuts.forEach(s => {
-    if (s.classList.contains('edit-mode')) {
-      s.classList.remove('edit-mode');
-    } else {
+        if (isEditMode) {
       s.classList.add('edit-mode');
+    } else {
+      s.classList.remove('edit-mode');
     }
   });
+document.getElementById('editShortcutsBtn').textContent = isEditMode ? '[DONE]' : '[EDIT]';
 
-  // Optionally toggle the Add inputs too:
   const inputs = document.getElementById('shortcutInputs');
-  inputs.style.display = inputs.style.display === 'none' ? 'flex' : 'none';
-});
+  inputs.style.display = isEditMode ? 'flex' : 'none';});
 
 // Load on startup
 loadQuickShortcuts();
-
 // SEARCH
 document.getElementById('search').addEventListener('input', (e) => {
   const query = e.target.value.trim().toLowerCase();
@@ -435,32 +504,20 @@ document.addEventListener('keydown', (e) => {
 
   if (e.key === '[') {
     document.querySelectorAll('#tabs > details').forEach(el => el.open = false);
-    playClick();
+
   } else if (e.key === ']') {
     document.querySelectorAll('#tabs > details').forEach(el => el.open = true);
-    playClick();
+
   } else if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
     e.preventDefault();
     document.getElementById('search').focus();
-    playClick();
+
   } else if (e.key === 't' || e.key === 'T') {
     cycleTheme();
-    playBeep();
   } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
     document.getElementById('save').click();
   } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
     document.getElementById('load').click();
-  }
-});
-
-//STARTPAGE SEARCH
-document.getElementById('search').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const query = e.target.value.trim();
-    if (query) {
-      const url = 'https://www.startpage.com/do/dsearch?query=' + encodeURIComponent(query);
-      browser.tabs.create({ url });
-    }
   }
 });
 
