@@ -89,7 +89,7 @@ function createTabElement(tab) {
     // Refresh the UI after pin change
     refreshTabs();
   });
-  
+
   const closeBtn = document.createElement('button');
   closeBtn.textContent = '[X]';
   closeBtn.className = 'close-btn';
@@ -126,7 +126,7 @@ function renderTabs(groups, open) { //open is the parameter that decides if the 
     const icon = document.createElement('img');
     icon.className = 'favicon';
     icon.src = groups[domain][0].favIconUrl || 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo-md.3f5f8412e4b0.png';
-    icon.alt = '';  
+    icon.alt = '';
     summary.prepend(icon);
 
     details.appendChild(summary);
@@ -191,11 +191,11 @@ function loadQuickShortcuts() {
       }
       btn.draggable = true;
 
-           const icon = document.createElement('img');
+      const icon = document.createElement('img');
       icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
       icon.alt = '';
       btn.prepend(icon);
-      
+
       // Label span
       const labelSpan = document.createElement('span');
       labelSpan.textContent = s.label;
@@ -309,16 +309,17 @@ document.getElementById('editShortcutsBtn').addEventListener('click', () => {
   const panel = document.getElementById('shortcutPanel');
   const shortcuts = panel.querySelectorAll('.shortcut');
   shortcuts.forEach(s => {
-        if (isEditMode) {
+    if (isEditMode) {
       s.classList.add('edit-mode');
     } else {
       s.classList.remove('edit-mode');
     }
   });
-document.getElementById('editShortcutsBtn').textContent = isEditMode ? '[DONE]' : '[EDIT]';
+  document.getElementById('editShortcutsBtn').textContent = isEditMode ? '[DONE]' : '[EDIT]';
 
   const inputs = document.getElementById('shortcutInputs');
-  inputs.style.display = isEditMode ? 'flex' : 'none';});
+  inputs.style.display = isEditMode ? 'flex' : 'none';
+});
 
 // Load on startup
 loadQuickShortcuts();
@@ -326,6 +327,10 @@ loadQuickShortcuts();
 document.getElementById('search').addEventListener('input', (e) => {
   const query = e.target.value.trim().toLowerCase();
   const allGroups = document.querySelectorAll('#tabs > details');
+
+  // HIDE QUICK SHORTCUTS ON SEARCH
+  const quickPanel = document.getElementById('quickAccess');
+  quickPanel.style.display = query ? 'none' : 'block';
 
   allGroups.forEach(details => {
     const tabList = details.querySelector('.tab-list');
@@ -450,7 +455,7 @@ function renderSavedGroups(savedGroups) {
     const icon = document.createElement('img');
     icon.className = 'favicon';
     icon.src = savedGroups[domain][0].favIconUrl || 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo-md.3f5f8412e4b0.png';
-    icon.alt = '';  
+    icon.alt = '';
     summary.prepend(icon);
 
 
