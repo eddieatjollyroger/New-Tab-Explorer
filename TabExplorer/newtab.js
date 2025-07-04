@@ -175,6 +175,84 @@ browser.tabs.query({})
     renderTabs(grouped, false); // Renders tabs with details closed
   });
 
+// Load and display Quick Access shortcuts
+function loadQuickShortcuts() {
+  browser.storage.local.get('quickShortcuts').then(({ quickShortcuts }) => {
+    const shortcuts = quickShortcuts || [];
+    const panel = document.getElementById('shortcutPanel');
+    panel.innerHTML = '';
+
+    shortcuts.forEach((s, index) => {
+      const btn = document.createElement('div');
+      btn.className = 'shortcut';
+      btn.textContent = s.label;
+
+            const icon = document.createElement('img');
+      icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
+      icon.alt = '';
+      btn.prepend(icon);
+      
+      btn.addEventListener('click', () => {
+        window.open(s.url, '_blank');
+      });
+
+      // Delete button inside
+      const delBtn = document.createElement('button');
+      delBtn.textContent = 'X';
+      delBtn.className = 'deleteBtn';
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent opening URL
+        shortcuts.splice(index, 1);
+        browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
+      });
+
+      btn.appendChild(delBtn);
+      panel.appendChild(btn);
+    });
+  });
+}
+
+// Add shortcut
+document.getElementById('addQuickShortcut').addEventListener('click', () => {
+  const label = document.getElementById('shortcutLabel').value.trim();
+  const url = document.getElementById('shortcutUrl').value.trim();
+
+  if (!label || !url) {
+    alert('Please enter both label and URL.');
+    return;
+  }
+
+  browser.storage.local.get('quickShortcuts').then(({ quickShortcuts }) => {
+    const shortcuts = quickShortcuts || [];
+    shortcuts.push({ label, url });
+    browser.storage.local.set({ quickShortcuts: shortcuts }).then(() => {
+      document.getElementById('shortcutLabel').value = '';
+      document.getElementById('shortcutUrl').value = '';
+      loadQuickShortcuts();
+    });
+  });
+});
+
+// Toggle Edit mode
+document.getElementById('editShortcutsBtn').addEventListener('click', () => {
+  const panel = document.getElementById('shortcutPanel');
+  const shortcuts = panel.querySelectorAll('.shortcut');
+  shortcuts.forEach(s => {
+    if (s.classList.contains('edit-mode')) {
+      s.classList.remove('edit-mode');
+    } else {
+      s.classList.add('edit-mode');
+    }
+  });
+
+  // Optionally toggle the Add inputs too:
+  const inputs = document.getElementById('shortcutInputs');
+  inputs.style.display = inputs.style.display === 'none' ? 'flex' : 'none';
+});
+
+// Load on startup
+loadQuickShortcuts();
+
 // SEARCH
 document.getElementById('search').addEventListener('input', (e) => {
   const query = e.target.value.trim().toLowerCase();

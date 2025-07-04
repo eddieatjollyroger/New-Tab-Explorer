@@ -23,7 +23,7 @@ body.theme-blue {
 
 
 button, input {
-  background: transparent;
+  background: #111;
   color: currentColor;
   border: 2px solid currentColor;
   font-family: 'Press Start 2P', monospace;
@@ -31,7 +31,10 @@ button, input {
   cursor: pointer;
   padding: 4px 8px;
 }
-
+button:hover {  
+  background: #222;
+  border-color: #ff0;
+}
     h1 {
       font-size: 16px;
       margin-bottom: 1em;
@@ -50,6 +53,10 @@ button, input {
       margin-left: 0.5em;
       padding: 0.5em;
     }
+    details:hover {  
+      background: #222;
+  border-color: #ff0;
+}
         #clock {
       font-size: 82px;
       margin-top: 1em;
@@ -94,6 +101,7 @@ button, input {
       flex-direction: column;
       flex-flow: row wrap;
       align-items:flex-start;
+      justify-content: center;
       padding: 0.25em 0.5em;
       margin: auto;
       cursor: pointer;
@@ -158,6 +166,133 @@ button, input {
   );
   animation: scroll 1s linear infinite;
   z-index: 9998;
+}
+
+#quickAccess {
+  margin-top: 1em;
+  font-family: monospace;
+  margin-bottom: 2em;
+}
+
+#quickAccess h3 {
+  color: currentColor;
+  margin: 0.5em 0;
+  font-size: 1em;
+  text-align: center;
+  align-items: center;
+  gap: 0.5em;
+  font-family: 'Press Start 2P', monospace;
+
+}
+
+#quickAccess h3 button {
+  padding: 0.2em 0.4em;
+  font-size: 0.8em;
+  background: #111;
+  border: 1px solid currentColor;
+  color: currentColor;
+  cursor: pointer;
+}
+#quickAccess h3 button:hover {
+  background: #222;
+  border-color: #ff0;
+}
+
+.shortcut {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.25em;
+  padding: 0.3em 0.6em;
+  background: #111;
+  border: 1px solid currentColor;
+  color: currentColor;
+  cursor: pointer;
+  font-size: 1.1em;
+  border-radius: 0.2em;
+  position: relative;
+}
+
+.shortcut:hover {
+  background: #222;
+  border-color: #ff0;
+}
+
+.shortcut .deleteBtn {
+  display: none;
+  margin-left: 0.5em;
+  background: transparent;
+  border: none;
+  color: #f00;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.shortcut.edit-mode .deleteBtn {
+  display: inline;}
+
+#shortcutPanel {
+          display: flex;
+      flex-direction: column;
+      flex-flow: row wrap;
+      align-items:flex-start;
+      justify-content: center;
+      margin-bottom: 3px;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.shortcut-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.6em;
+  font-size: 0.9em;
+  background: #111;
+  border: 1px solid currentColor;
+  color: currentColor;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.shortcut-btn:hover {
+  background: #222;
+  border-color: #ff0;
+}
+
+.shortcut-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+#shortcutInputs {
+      display: flex;
+      flex-direction: row;
+      align-items:flex-start;
+      justify-content: center;
+}
+
+#shortcutInputs input {
+  padding: 0.3em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.9em;
+  border: 1px solid currentColor;
+  background: #000;
+  color: currentColor;
+}
+
+#shortcutInputs button {
+  padding: 0.3em 0.6em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.9em;
+  border: 1px solid currentColor;
+  background: #111;
+  color: currentColor;
+  cursor: pointer;
+}
+
+#shortcutInputs button:hover {
+  background: #222;
+  border-color: #ff0;
 }
 
 @keyframes scroll {
