@@ -1,5 +1,7 @@
 # TAB EXPLORER
-A tab manager and helper for tab hoarders
+A tab manager for tab hoarders
+
+[Mozilla Addon](https://addons.mozilla.org/en-GB/firefox/addon/tab-explorer/)
 
 Features 
 - Quick access fully editable panel
