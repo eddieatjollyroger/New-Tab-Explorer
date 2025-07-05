@@ -215,7 +215,7 @@ function loadQuickShortcuts() {
       // Open on click
       btn.addEventListener('click', () => {
         if (!btn.classList.contains('edit-mode')) {
-          window.open(s.url, '_blank');
+          window.open(s.url, '_self');
         }
       });
 
@@ -532,7 +532,7 @@ document.getElementById('search').addEventListener('keydown', (e) => {
     const query = e.target.value.trim();
     if (query) {
       const url = 'https://www.startpage.com/do/dsearch?query=' + encodeURIComponent(query);
-      browser.tabs.create({ url });
+      window.open(url,"_self");
     }
   }
 });
