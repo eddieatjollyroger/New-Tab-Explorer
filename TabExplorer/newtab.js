@@ -526,6 +526,17 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+//STARTPAGE SEARCH
+document.getElementById('search').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const query = e.target.value.trim();
+    if (query) {
+      const url = 'https://www.startpage.com/do/dsearch?query=' + encodeURIComponent(query);
+      browser.tabs.create({ url });
+    }
+  }
+});
+
 // Cycle through themes
 function cycleTheme() {
   const themes = ['green', 'amber', 'blue'];
