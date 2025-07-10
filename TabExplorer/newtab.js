@@ -526,13 +526,12 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-//STARTPAGE SEARCH
+//DEFAULT SEARCH ENGINE 
 document.getElementById('search').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     const query = e.target.value.trim();
     if (query) {
-      const url = 'https://www.startpage.com/do/dsearch?query=' + encodeURIComponent(query);
-      window.open(url,"_self");
+      browser.search.query({text: query});
     }
   }
 });
