@@ -236,7 +236,9 @@ function loadQuickShortcuts() {
 
         const saveBtn = document.createElement('button');
         saveBtn.textContent = 'Save';
-        saveBtn.addEventListener('click', () => {
+        saveBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           s.label = labelInput.value.trim();
           s.url = urlInput.value.trim();
           browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
