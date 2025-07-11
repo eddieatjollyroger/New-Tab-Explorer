@@ -215,7 +215,9 @@ function loadQuickShortcuts() {
       // Open on click
       btn.addEventListener('click', () => {
         if (!btn.classList.contains('edit-mode')) {
-          window.open(s.url, '_self');
+          const url = s.url.startsWith("http") || s.url.startsWith("https") ?
+                      s.url : new URL("https://"+s.url).href;
+          window.open(url, '_self');
         }
       });
 
