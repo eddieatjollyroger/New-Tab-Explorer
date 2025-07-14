@@ -191,15 +191,20 @@ function loadQuickShortcuts() {
       }
       btn.draggable = true;
 
+      const link = document.createElement('a');
+      link.href = s.url;
+
       const icon = document.createElement('img');
       icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
       icon.alt = '';
-      btn.prepend(icon);
+      link.prepend(icon);
 
       // Label span
       const labelSpan = document.createElement('span');
       labelSpan.textContent = s.label;
-      btn.appendChild(labelSpan);
+      link.appendChild(labelSpan);
+      
+      btn.appendChild(link);
 
       // Delete button
       const delBtn = document.createElement('button');
@@ -212,12 +217,10 @@ function loadQuickShortcuts() {
       });
       btn.appendChild(delBtn);
 
-      // Open on click
-      btn.addEventListener('click', () => {
-        if (!btn.classList.contains('edit-mode')) {
-          const url = s.url.startsWith("http") || s.url.startsWith("https") ?
-                      s.url : new URL("https://"+s.url).href;
-          window.open(url, '_self');
+      // Prevent opening on click when in edit mode
+      btn.addEventListener('click', (e) => {
+        if (btn.classList.contains('edit-mode')) {
+        e.preventDefault();
         }
       });
 
@@ -289,9 +292,11 @@ function loadQuickShortcuts() {
 // Add shortcut
 document.getElementById('addQuickShortcut').addEventListener('click', () => {
   const label = document.getElementById('shortcutLabel').value.trim();
-  const url = document.getElementById('shortcutUrl').value.trim();
-
-  if (!label || !url) {
+  const urlTrim = document.getElementById('shortcutUrl').value.trim();
+  const url = urlTrim.startsWith("http") || urlTrim.startsWith("https") ?
+              urlTrim : new URL("https://"+urlTrim).href;
+  
+          if (!label || !url) {
     alert('Please enter both label and URL.');
     return;
   }

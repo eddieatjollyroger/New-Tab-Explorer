@@ -1,3 +1,11 @@
+* {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            scrollbar-color: #00ff00 #000;
+
+  }
+  
 body {
   font-family: "Press Start 2P", cursive;
   background: #000;
@@ -87,8 +95,8 @@ details:hover {
   border-bottom: 3px dotted currentColor;
 }
 
-#search {
-  width: 98.3%;
+#search { 
+  width: 100%;
   font-family: inherit;
   font-size: 12px;
   padding: 0.5em;
@@ -225,6 +233,11 @@ summary {
   border-radius: 0.2em;
   position: relative;
   user-select: none;
+}
+
+.shortcut a{
+  text-decoration: none;
+  color: inherit;
 }
 
 .shortcut:hover {
