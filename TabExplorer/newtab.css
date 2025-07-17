@@ -159,6 +159,7 @@ summary .favicon{
   width: 16px;
   height: 16px;
   margin-top: auto;
+  margin-bottom: auto;
 }
 
 #tabs {
@@ -381,6 +382,7 @@ summary .favicon{
   width: 16px;
   height: 16px;
   margin-top: auto;
+  margin-bottom: auto;
 }
 
 #shortcutInputs {
