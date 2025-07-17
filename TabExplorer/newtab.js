@@ -14,18 +14,28 @@ themeSelect.addEventListener('change', () => {
   browser.storage.local.set({ theme });
 });
 
+const input = document.getElementById("search-input");
+let placeholderText = "PRESS / TO SEARCH YOUR TABS AND THE WEB";
+let placeholderIndex = 0;
+let placeholderInterval;
+let isTyping = false;
+
+
 function groupTabsByDomain(tabs) {
   const groups = {};
   for (const tab of tabs) {
     try {
-      const url = new URL(tab.url);
-      const domain = url.hostname;
-      if (!groups[domain]) {
-        groups[domain] = [];
+      if (!tab.url) {
+        tab.url = fixPendingURL(tab.pendingUrl);
       }
+      const url = new URL(tab.url);
+      const domain = url.hostname.startsWith('www.') ?
+        url.hostname.split('www.')[1] : url.hostname; if (!groups[domain]) {
+          groups[domain] = [];
+        }
       groups[domain].push(tab);
     } catch (e) {
-      console.warn("Invalid URL:", tab.url);
+      console.warn("Invalid URL:", tab);
     }
   }
   return groups;
@@ -50,7 +60,7 @@ function createTabElement(tab) {
 
   const icon = document.createElement('img');
   icon.className = 'favicon';
-  icon.src = tab.favIconUrl || 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo-md.3f5f8412e4b0.png';
+  icon.src = getFavIcon(tab);
   icon.alt = '';
 
   const title = document.createElement('span');
@@ -66,6 +76,7 @@ function createTabElement(tab) {
   pinBtn.style.color = 'inherit';
   pinBtn.style.font = 'inherit';
   pinBtn.style.cursor = 'pointer';
+
   pinBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     browser.tabs.update(tab.id, { pinned: !tab.pinned });
@@ -82,6 +93,7 @@ function createTabElement(tab) {
   closeBtn.style.color = '#f00';
   closeBtn.style.font = 'inherit';
   closeBtn.style.cursor = 'pointer';
+
   closeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     browser.tabs.remove(tab.id);
@@ -95,12 +107,29 @@ function createTabElement(tab) {
   return el;
 }
 
+browser.tabs.onUpdated.addListener(function (tabID, changeinfo, tab) {
+  if (tab.url == 'chrome://newtab/' && selected) return; // Dont update needlessly on own load
+  if (changeinfo.status == 'complete') refreshTabs();
+});
+
+browser.tabs.onRemoved.addListener(function (tabId) {
+  allTabs = allTabs.filter(tab => tab.id !== tabId);
+  const grouped = groupTabsByDomain(allTabs);
+  var filteredGroup = {};
+  for (var key in grouped) {
+    var arr = grouped[key];
+    filteredGroup[key] = (arr.filter(t => t.id !== tabId));
+  }
+  refreshTabs(filteredGroup);
+});
+
 function renderTabs(groups, open) { //open is the parameter that decides if the parent folders details will be open or closed on render
   const container = document.getElementById('tabs');
   container.innerHTML = '';
 
   for (const domain in groups) {
     const details = document.createElement('details');
+    details.className = domain;
     details.open = open;
 
     const summary = document.createElement('summary');
@@ -108,7 +137,44 @@ function renderTabs(groups, open) { //open is the parameter that decides if the 
 
     const icon = document.createElement('img');
     icon.className = 'favicon';
-    icon.src = groups[domain][0].favIconUrl || 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo-md.3f5f8412e4b0.png';
+    icon.src = getFavIcon(groups[domain][0]);
+    icon.alt = '';
+    summary.prepend(icon);
+
+    details.appendChild(summary);
+
+    const tabList = document.createElement('div');
+    tabList.className = 'tab-list';
+
+    for (const tab of groups[domain]) {
+      const tabEl = createTabElement(tab);
+      tabList.appendChild(tabEl); 
+    }
+
+    details.appendChild(tabList);
+    container.appendChild(details);
+
+  }
+}
+
+function reRenderTabs(groups) { //open is the parameter that decides if the parent folders details will be open or closed on render
+  const detailsEls = document.querySelectorAll('#tabs > details');
+  const container = document.getElementById('tabs');
+  container.innerHTML = '';
+  for (const domain in groups) {
+
+    const details = document.createElement('details');
+    const detail = Array.from(detailsEls).find(node => node.className == domain);
+    details.className = domain;
+
+    details.open = detail ? detail.open : "";
+
+    const summary = document.createElement('summary');
+    summary.textContent = `${domain} (${groups[domain].length} tab${groups[domain].length !== 1 ? 's' : ''})`;
+
+    const icon = document.createElement('img');
+    icon.className = 'favicon';
+    icon.src = getFavIcon(groups[domain][0]);
     icon.alt = '';
     summary.prepend(icon);
 
@@ -128,11 +194,12 @@ function renderTabs(groups, open) { //open is the parameter that decides if the 
   }
 }
 
-function refreshTabs() {
+function refreshTabs(tabs) {
+  if (tabs) return reRenderTabs(tabs);
   browser.tabs.query({}).then((tabs) => {
     allTabs = tabs;
     const grouped = groupTabsByDomain(tabs);
-    renderTabs(grouped, true); // Renders tabs without closing the details
+    reRenderTabs(grouped); // Renders tabs without closing the details
   });
 }
 
@@ -178,7 +245,15 @@ function loadQuickShortcuts() {
       link.href = s.url;
 
       const icon = document.createElement('img');
-      icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
+      icon.src = loadFavicon(s.url).then((img) => {
+        console.log(img.naturalHeight)
+        if (img.naturalHeight !== 16) {
+          icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
+        }
+        else {
+          icon.src = '/favicongif.gif'
+        }
+      });
       icon.alt = '';
       link.prepend(icon);
 
@@ -225,6 +300,8 @@ function loadQuickShortcuts() {
 
         //Scrolls input to the end of line on mouse click               
         urlInput.addEventListener('click', () => {
+          urlInput.focus();
+          urlInput.scrollLeft = urlInput.scrollWidth;
           urlInput.setSelectionRange(urlInput.value.length, urlInput.value.length);
         });
 
@@ -321,8 +398,8 @@ document.getElementById('editShortcutsBtn').addEventListener('click', () => {
 // Load on startup
 loadQuickShortcuts();
 // SEARCH
-document.getElementById('search').addEventListener('input', (e) => {
-  const query = e.target.value.trim().toLowerCase();
+document.getElementById('search-input').addEventListener('input', (e) => {
+  const query = e.target.textContent.trim().toLowerCase();
   const allGroups = document.querySelectorAll('#tabs > details');
 
   // HIDE QUICK SHORTCUTS ON SEARCH
@@ -502,7 +579,7 @@ function renderSavedGroups(savedGroups) {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.id === 'search-input') return;
 
   if (e.key === '[') {
     document.querySelectorAll('#tabs > details').forEach(el => el.open = false);
@@ -512,7 +589,7 @@ document.addEventListener('keydown', (e) => {
 
   } else if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
     e.preventDefault();
-    document.getElementById('search').focus();
+    document.getElementById('search-input').focus();
 
   } else if (e.key === 't' || e.key === 'T') {
     cycleTheme();
@@ -523,12 +600,15 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-//DEFAULT SEARCH ENGINE 
-document.getElementById('search').addEventListener('keydown', (e) => {
+//DEFAULT SEARCH ENGINE
+document.getElementById('search-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
-    const query = e.target.value.trim();
+    console.log(e);
+    const query = e.target.textContent.trim();
     if (query) {
-      browser.search.query({ text: query });
+      browser.search.query({
+        text: query
+      });
     }
   }
 });
@@ -542,6 +622,7 @@ function cycleTheme() {
   document.body.className = 'theme-' + next;
   browser.storage.local.set({ theme: next });
 }
+
 
 //Escape HTML
 function escapeHTML(str) {
@@ -563,10 +644,91 @@ function prependHttps(url) {
     url : new URL("https://" + url).href;
 }
 
-function cleanURL(url) {
+function cleanURL(urlIn) {
+  const url = new URL(urlIn);
   if (url.search) {
     return url.hostname + url.pathname + url.search;
   }
   return url.pathname.length > 1 ?
     url.hostname + url.pathname : url.hostname;
 }
+function fixPendingURL(url) {
+  const formattedUrl = new URL(url);
+  return formattedUrl;
+}
+function getFavIcon(tab) {
+  if (tab.favIconUrl) {
+    return tab.favIconUrl;
+  }
+  const url = new URL(tab.url);
+  if (url?.protocol.startsWith('http')) {
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}`;
+  }
+  return '/favicongif.gif';
+}
+
+function loadFavicon(url) {
+  return new Promise((resolve, reject) => {
+    const sizeQuery = '&sz=64';
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(e);
+    img.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}${sizeQuery}`;
+  });
+}
+
+function placeCaretAtEnd(el) {
+  el.focus();
+  if (typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
+
+
+function startPlaceholderTyping() {
+  console.log('typing')
+  if (input.textContent.trim() !== "" || document.activeElement === input) return;
+
+  isTyping = true;
+  input.classList.add("placeholder");
+
+  placeholderInterval = setInterval(() => {
+    if (placeholderIndex < placeholderText.length) {
+      input.textContent += placeholderText.charAt(placeholderIndex);
+      placeholderIndex++;
+    } else {
+      clearInterval(placeholderInterval);
+      setTimeout(() => {
+        input.textContent = "";
+        placeholderIndex = 0;
+        startPlaceholderTyping();
+      }, 7500);
+    }
+  }, 100);
+}
+
+function stopPlaceholderTyping() {
+  if (!isTyping) return;
+  clearInterval(placeholderInterval);
+  input.textContent = "";
+  input.classList.remove("placeholder");
+  placeholderIndex = 0;
+  isTyping = false;
+}
+
+// Start typing when not focused
+startPlaceholderTyping();
+
+input.addEventListener("focus", stopPlaceholderTyping);
+input.addEventListener("blur", () => {
+  if (input.textContent.trim() === "") startPlaceholderTyping();
+});
+input.addEventListener("input", () => {
+  if (input.textContent.trim() !== "") stopPlaceholderTyping();
+});
+

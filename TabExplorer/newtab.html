@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8" />
   <link rel="stylesheet" href="/newtab.css">
   <title>Tab Explorer</title>
   <!-- Load retro font -->
@@ -21,7 +22,7 @@
   <h1>TAB EXPLORER</h1>
 
   <div id="clock"></div>
-  <input type="text" id="search" placeholder="PRESS / TO SEARCH YOUR TABS AND THE WEB">
+  <div id="search-input" contenteditable="true" spellcheck="false"></div>
   <div id="quickAccess">
     <h3>Quick Access
       <button id="editShortcutsBtn">[EDIT]</button>
@@ -36,12 +37,10 @@
 
   <h2>CURRENT OPEN TABS</h2>
   <div id="button-grid">
-    <button id="collapseAll"
-      style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;">
+    <button id="collapseAll">
       COLLAPSE ALL ([)</button>
-    <button id="expandAll"
-      style="font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:1em;background:#111;cursor:pointer;">EXPAND
-      ALL (])</button>
+    <button id="expandAll">
+      EXPAND ALL (])</button>
     <button id="save"
       style="display:none;font-family:inherit;font-size:12px;padding:0.25em 0.5em;margin-left:0.5em;margin-bottom:0.5em;background:#111;cursor:pointer;">SAVE
       GROUPS (Ctrl + Shift + S)</button>
@@ -51,7 +50,7 @@
   </div>
   <div id="tabs"></div>
   <script src="newtab.js"></script>
-  <h3 style="margin: 2EM; text-align: center;">PRESS T TO SWITCH COLOR THEME</h1>
+  <h3 id="footer">PRESS T TO SWITCH COLOR THEME</h1>
 </body>
 
 </html>

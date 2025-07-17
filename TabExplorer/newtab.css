@@ -5,28 +5,34 @@
             scrollbar-color: #00ff00 #000;
 
   }
-  
+:root {
+  --theme-color: #0f0;
+}
 body {
-  font-family: "Press Start 2P", cursive;
+  font-family: "Press Start 2P", monospace;
   background: #000;
   color: #0f0;
   margin: 0;
   padding: 1em;
+  --main-bg-color: #0f0;
 }
 
 body.theme-green {
   background-color: #000;
   color: #0f0;
+  --theme-color: #0f0
 }
 
 body.theme-amber {
   background-color: #000;
   color: #ffbf00;
+  --theme-color: #ffbf00;
 }
 
 body.theme-blue {
   background-color: #000;
   color: #00bfff;
+  --theme-color: #00bfff;
 }
 
 
@@ -95,7 +101,9 @@ details:hover {
   border-bottom: 3px dotted currentColor;
 }
 
-#search { 
+
+#search-input {
+  display: inline-block;
   width: 100%;
   font-family: inherit;
   font-size: 12px;
@@ -105,6 +113,28 @@ details:hover {
   border: 3px solid currentColor;
   color: currentColor;
   text-align: center;
+  text-decoration: #0f0;
+  caret-color: transparent;
+}
+#search-input.placeholder {
+color: #666;
+border: 3px solid var(--theme-color);;
+}
+
+#search-input::after {
+  content: '█';
+  animation: blink 1s steps(2, start) infinite;
+  position: relative;
+  top: -3px;
+}
+.blink {
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
 }
 
 summary {
@@ -340,7 +370,26 @@ summary {
   background: #222;
   border-color: #ff0;
 }
-
+#collapseAll{
+  font-size:12px;
+  padding:0.25em 0.5em;
+  margin-left:0.5em;
+  margin-bottom:1em;
+  background:#111;
+  cursor:pointer;
+}
+#expandAll{
+  font-size:12px;
+  padding:0.25em 0.5em;
+  margin-left:0.5em;
+  margin-bottom:1em;
+  background:#111;
+  cursor:pointer;
+}
+h3#footer{
+  margin: 2EM;
+   text-align: center;
+}
 @keyframes scroll {
   0% {
     background-position-y: 0;
@@ -351,7 +400,10 @@ summary {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 600px) {
+  * {            
+    scrollbar-color: #00ff00 #000;
+  }
   #tabs {
     flex-direction: column;
   }
