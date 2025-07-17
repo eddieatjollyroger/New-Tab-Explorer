@@ -115,18 +115,22 @@ details:hover {
   padding: 0.5em;
   margin-bottom: 2em;
   background: #111;
-  border: 3px solid currentColor;
+  border: 3px solid var(--theme-color);
   color: currentColor;
-  text-align: center;
-  text-decoration: #0f0;
+  text-decoration: var(--theme-color);
   caret-color: transparent;
+}
+#search-input:focus{
+  outline:none;
+  border-color: var(--theme-color);
+  border-width: 3px;
 }
   #search-input br{
   display:none;
 }
 #search-input.placeholder {
 color: #666;
-border: 3px solid var(--theme-color);;
+border: 3px solid #666;
 }
 
 #search-input::after {
@@ -332,16 +336,6 @@ summary .favicon{
   display: inline;
 }
 
-.shortcut input.edit-label,
-.shortcut input.edit-url {
-  background: #222;
-  border: 1px solid currentColor;
-  color: currentColor;
-  font-size: 0.9em;
-  padding: 0.2em;
-  margin-right: 0.3em;
-}
-
 #shortcutPanel {
   display: flex;
   flex-direction: column;
@@ -396,9 +390,17 @@ summary .favicon{
   padding: 0.3em;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.9em;
-  border: 1px solid currentColor;
+  border: 1px solid #666;
   background: #000;
   color: currentColor;
+}
+#shortcutInputs input:focus{
+  padding: 0.3em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.9em;
+  border: 1px solid var(--theme-color);
+  background: #000;
+  outline: none;
 }
 
 #shortcutInputs button {
