@@ -339,7 +339,7 @@ function loadQuickShortcuts() {
 document.getElementById('addQuickShortcut').addEventListener('click', () => {
   const label = document.getElementById('shortcutLabel').value.trim();
   const urlTrim = document.getElementById('shortcutUrl').value.trim();
-  const url = prependHttps(urlTrim);
+  const url = urlTrim ? prependHttps(urlTrim): urlTrim;
 
   if (!label || !url) {
     alert('Please enter both label and URL.');
@@ -684,6 +684,7 @@ function startPlaceholderTyping() {
 function stopPlaceholderTyping() {
   if (!isTyping) return;
   clearInterval(placeholderInterval);
+  placeholderInterval = undefined; // actually clear Interval
   input.textContent = "";
   input.classList.remove("placeholder");
   placeholderIndex = 0;
