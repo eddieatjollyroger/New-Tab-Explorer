@@ -14,6 +14,17 @@ themeSelect.addEventListener('change', () => {
   browser.storage.local.set({ theme });
 });
 
+// Cycle through themes
+function cycleTheme() {
+  const themes = ['green', 'amber', 'blue'];
+  let current = themeSelect.value;
+  let next = themes[(themes.indexOf(current) + 1) % themes.length];
+  themeSelect.value = next;
+  document.body.className = 'theme-' + next;
+  browser.storage.local.set({ theme: next });
+}
+
+
 const input = document.getElementById("search-input");
 let placeholderText = "PRESS / TO SEARCH YOUR TABS AND THE WEB";
 let placeholderIndex = 0;
@@ -21,25 +32,18 @@ let placeholderInterval;
 let isTyping = false;
 
 
-function groupTabsByDomain(tabs) {
-  const groups = {};
-  for (const tab of tabs) {
-    try {
-      if (!tab.url) {
-        tab.url = fixPendingURL(tab.pendingUrl);
-      }
-      const url = new URL(tab.url);
-      const domain = url.hostname.startsWith('www.') ?
-        url.hostname.split('www.')[1] : url.hostname; if (!groups[domain]) {
-          groups[domain] = [];
-        }
-      groups[domain].push(tab);
-    } catch (e) {
-      console.warn("Invalid URL:", tab);
-    }
-  }
-  return groups;
-}
+browser.tabs.onUpdated.addListener(function (tabID, changeinfo, tab) {
+  if (tab.url == 'chrome://newtab/' && tab.selected) return; // Dont update needlessly on own load
+  if (changeinfo.status == 'complete') refreshTabs();
+});
+
+browser.tabs.onRemoved.addListener(function (tabId) {
+  allTabs = allTabs.filter(tab => tab.id !== tabId);
+  const grouped = groupTabsByDomain(allTabs);
+  refreshTabs(grouped);
+});
+
+
 
 function createTabElement(tab) {
   const el = document.createElement('div');
@@ -107,68 +111,22 @@ function createTabElement(tab) {
   return el;
 }
 
-browser.tabs.onUpdated.addListener(function (tabID, changeinfo, tab) {
-  if (tab.url == 'chrome://newtab/' && selected) return; // Dont update needlessly on own load
-  if (changeinfo.status == 'complete') refreshTabs();
-});
-
-browser.tabs.onRemoved.addListener(function (tabId) {
-  allTabs = allTabs.filter(tab => tab.id !== tabId);
-  const grouped = groupTabsByDomain(allTabs);
-  var filteredGroup = {};
-  for (var key in grouped) {
-    var arr = grouped[key];
-    filteredGroup[key] = (arr.filter(t => t.id !== tabId));
-  }
-  refreshTabs(filteredGroup);
-});
-
-function renderTabs(groups, open) { //open is the parameter that decides if the parent folders details will be open or closed on render
-  const container = document.getElementById('tabs');
-  container.innerHTML = '';
-
-  for (const domain in groups) {
-    const details = document.createElement('details');
-    details.className = domain;
-    details.open = open;
-
-    const summary = document.createElement('summary');
-    summary.textContent = `${domain} (${groups[domain].length} tab${groups[domain].length !== 1 ? 's' : ''})`;
-
-    const icon = document.createElement('img');
-    icon.className = 'favicon';
-    icon.src = getFavIcon(groups[domain][0]);
-    icon.alt = '';
-    summary.prepend(icon);
-
-    details.appendChild(summary);
-
-    const tabList = document.createElement('div');
-    tabList.className = 'tab-list';
-
-    for (const tab of groups[domain]) {
-      const tabEl = createTabElement(tab);
-      tabList.appendChild(tabEl); 
-    }
-
-    details.appendChild(tabList);
-    container.appendChild(details);
-
-  }
-}
-
-function reRenderTabs(groups) { //open is the parameter that decides if the parent folders details will be open or closed on render
+function renderTabs(groups, isFirstRender) {
   const detailsEls = document.querySelectorAll('#tabs > details');
   const container = document.getElementById('tabs');
   container.innerHTML = '';
   for (const domain in groups) {
 
     const details = document.createElement('details');
-    const detail = Array.from(detailsEls).find(node => node.className == domain);
     details.className = domain;
 
-    details.open = detail ? detail.open : "";
-
+    if (!isFirstRender) {
+      const detail = Array.from(detailsEls).find(node => node.className == domain);
+      details.open = detail ? detail.open : "";
+    }
+    else {
+      details.open = false;
+    }
     const summary = document.createElement('summary');
     summary.textContent = `${domain} (${groups[domain].length} tab${groups[domain].length !== 1 ? 's' : ''})`;
 
@@ -195,12 +153,47 @@ function reRenderTabs(groups) { //open is the parameter that decides if the pare
 }
 
 function refreshTabs(tabs) {
-  if (tabs) return reRenderTabs(tabs);
+  if (tabs) return renderTabs(tabs, isFirstRender = false);
   browser.tabs.query({}).then((tabs) => {
-    allTabs = tabs;
+    allTabs = groupByFirstDomainSeen(tabs, 'url');
     const grouped = groupTabsByDomain(tabs);
-    reRenderTabs(grouped); // Renders tabs without closing the details
+    renderTabs(grouped, isFirstRender = false); // Renders tabs without closing the details
   });
+}
+
+function groupTabsByDomain(tabs) {
+  const groups = {};
+  for (const tab of tabs) {
+    try {
+      if (!tab.url) {
+        tab.url = fixPendingURL(tab.pendingUrl);
+      }
+      const url = new URL(tab.url);
+      const domain = url.hostname.startsWith('www.') ?
+        url.hostname.split('www.')[1] : url.hostname;
+      if (!groups[domain]) {
+        groups[domain] = [];
+      }
+      groups[domain].push(tab);
+    } catch (e) {
+      console.warn("Invalid URL:", tab);
+    }
+  }
+  return groups;
+}
+
+function groupByFirstDomainSeen(arr, key) {
+  const grouped = new Map();
+  const justTabs = [];
+  for (const item of arr) {
+    const k = item[key];
+    if (!grouped.has(k)) {
+      grouped.set(k, []);
+    }
+    grouped.get(k).push(item);
+  }
+  grouped.forEach((key) => key.forEach(value => justTabs.push(value)));
+  return justTabs;
 }
 
 // CLOCK
@@ -217,12 +210,11 @@ updateClock();
 
 // LOAD & RENDER
 let allTabs = [];
-
 browser.tabs.query({})
   .then((tabs) => {
-    allTabs = tabs;
-    const grouped = groupTabsByDomain(tabs);
-    renderTabs(grouped, false); // Renders tabs with details closed
+    allTabs = groupByFirstDomainSeen(tabs, 'url');
+    const grouped = groupTabsByDomain(allTabs);
+    renderTabs(grouped, isFirstRender = true); // First time rendering tabs
   });
 
 // Load and display Quick Access shortcuts
@@ -246,7 +238,6 @@ function loadQuickShortcuts() {
 
       const icon = document.createElement('img');
       icon.src = loadFavicon(s.url).then((img) => {
-        console.log(img.naturalHeight)
         if (img.naturalHeight !== 16) {
           icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
         }
@@ -480,6 +471,42 @@ document.getElementById('expandAll').addEventListener('click', () => {
   document.querySelectorAll('#tabs > details').forEach(el => el.open = true);
 });
 
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.id === 'search-input') return;
+
+  if (e.key === '[') {
+    document.querySelectorAll('#tabs > details').forEach(el => el.open = false);
+
+  } else if (e.key === ']') {
+    document.querySelectorAll('#tabs > details').forEach(el => el.open = true);
+
+  } else if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault();
+    document.getElementById('search-input').focus();
+
+  } else if (e.key === 't' || e.key === 'T') {
+    cycleTheme();
+  } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+    document.getElementById('save').click();
+  } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+    document.getElementById('load').click();
+  }
+});
+
+//DEFAULT SEARCH ENGINE
+document.getElementById('search-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const query = e.target.textContent.trim();
+    if (query) {
+      browser.search.query({
+        text: query
+      });
+    }
+  }
+});
+
+
 // Save groups to storage
 document.getElementById('save').addEventListener('click', () => {
   const groups = {};
@@ -578,52 +605,6 @@ function renderSavedGroups(savedGroups) {
   }
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.id === 'search-input') return;
-
-  if (e.key === '[') {
-    document.querySelectorAll('#tabs > details').forEach(el => el.open = false);
-
-  } else if (e.key === ']') {
-    document.querySelectorAll('#tabs > details').forEach(el => el.open = true);
-
-  } else if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
-    e.preventDefault();
-    document.getElementById('search-input').focus();
-
-  } else if (e.key === 't' || e.key === 'T') {
-    cycleTheme();
-  } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
-    document.getElementById('save').click();
-  } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
-    document.getElementById('load').click();
-  }
-});
-
-//DEFAULT SEARCH ENGINE
-document.getElementById('search-input').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    console.log(e);
-    const query = e.target.textContent.trim();
-    if (query) {
-      browser.search.query({
-        text: query
-      });
-    }
-  }
-});
-
-// Cycle through themes
-function cycleTheme() {
-  const themes = ['green', 'amber', 'blue'];
-  let current = themeSelect.value;
-  let next = themes[(themes.indexOf(current) + 1) % themes.length];
-  themeSelect.value = next;
-  document.body.className = 'theme-' + next;
-  browser.storage.local.set({ theme: next });
-}
-
-
 //Escape HTML
 function escapeHTML(str) {
   return str.replace(/[&<>"'`=\/]/g, (s) => {
@@ -691,7 +672,6 @@ function placeCaretAtEnd(el) {
 
 
 function startPlaceholderTyping() {
-  console.log('typing')
   if (input.textContent.trim() !== "" || document.activeElement === input) return;
 
   isTyping = true;

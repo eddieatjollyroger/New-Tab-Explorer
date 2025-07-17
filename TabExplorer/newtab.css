@@ -80,6 +80,8 @@ details:hover {
 }
 
 #clock {
+  display: flex;
+  justify-content: center;
   font-size: 82px;
   margin-top: 1em;
   margin-bottom: 1em;
@@ -103,7 +105,8 @@ details:hover {
 
 
 #search-input {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
   width: 100%;
   font-family: inherit;
   font-size: 12px;
@@ -115,6 +118,9 @@ details:hover {
   text-align: center;
   text-decoration: #0f0;
   caret-color: transparent;
+}
+  #search-input br{
+  display:none;
 }
 #search-input.placeholder {
 color: #666;
@@ -407,4 +413,7 @@ h3#footer{
   #tabs {
     flex-direction: column;
   }
+    #search-input br{
+  display:none;
+}
 }
