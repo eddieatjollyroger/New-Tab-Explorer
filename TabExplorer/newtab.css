@@ -176,6 +176,29 @@ summary {
   background: black;
 }
 
+.pin-btn {
+  margin-left: 0.5em;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.pin-btn:hover{
+  background:black;
+}
+.close-btn {
+  margin-left: 0.5em;
+  background : transparent;
+  border : none;
+  color : #f00;
+  font: inherit;
+  cursor : pointer;
+}
+.close-btn:hover{
+  background: black;
+}
+
 .favicon {
   width: 13px;
   height: 13px;

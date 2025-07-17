@@ -74,12 +74,6 @@ function createTabElement(tab) {
   const pinBtn = document.createElement('button');
   pinBtn.textContent = tab.pinned ? '[UNPIN]' : '[PIN]';
   pinBtn.className = 'pin-btn';
-  pinBtn.style.marginLeft = '0.5em';
-  pinBtn.style.background = 'transparent';
-  pinBtn.style.border = 'none';
-  pinBtn.style.color = 'inherit';
-  pinBtn.style.font = 'inherit';
-  pinBtn.style.cursor = 'pointer';
 
   pinBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -91,12 +85,7 @@ function createTabElement(tab) {
   const closeBtn = document.createElement('button');
   closeBtn.textContent = '[X]';
   closeBtn.className = 'close-btn';
-  closeBtn.style.marginLeft = '0.5em';
-  closeBtn.style.background = 'transparent';
-  closeBtn.style.border = 'none';
-  closeBtn.style.color = '#f00';
-  closeBtn.style.font = 'inherit';
-  closeBtn.style.cursor = 'pointer';
+
 
   closeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
