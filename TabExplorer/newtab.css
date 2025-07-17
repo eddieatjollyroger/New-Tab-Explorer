@@ -108,6 +108,7 @@ details:hover {
 #search-input {
   display: inline-block;
   justify-content: center;
+  text-align: center;
   width: 100%;
   font-family: inherit;
   font-size: 12px;
