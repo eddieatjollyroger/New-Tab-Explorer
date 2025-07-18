@@ -311,8 +311,8 @@ function loadQuickShortcuts() {
 
       btn.addEventListener('dragover', (e) => {
         e.preventDefault();
-        btn.style.border = '2px dashed #0f0';
-      });
+        btn.style.border = '2px dashed var(--theme-color)'; 
+           });
       btn.addEventListener('dragleave', () => {
         btn.style.border = '';
       });
