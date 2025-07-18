@@ -174,12 +174,12 @@ function groupTabsByDomain(tabs) {
 function groupByFirstDomainSeen(arr, key) {
   const grouped = new Map();
   const justTabs = [];
-  for (const item of arr) {
-    const k = item[key];
-    if (!grouped.has(k)) {
-      grouped.set(k, []);
+  for (const tab of arr) {
+    const host = new URL(tab[key]).hostname; //group by hostname instead of just url
+    if (!grouped.has(host)) {
+      grouped.set(host, []);
     }
-    grouped.get(k).push(item);
+    grouped.get(host).push(tab);
   }
   grouped.forEach((key) => key.forEach(value => justTabs.push(value)));
   return justTabs;
@@ -339,7 +339,7 @@ function loadQuickShortcuts() {
 document.getElementById('addQuickShortcut').addEventListener('click', () => {
   const label = document.getElementById('shortcutLabel').value.trim();
   const urlTrim = document.getElementById('shortcutUrl').value.trim();
-  const url = urlTrim ? prependHttps(urlTrim): urlTrim;
+  const url = urlTrim ? prependHttps(urlTrim) : urlTrim;
 
   if (!label || !url) {
     alert('Please enter both label and URL.');
@@ -645,18 +645,6 @@ function loadFavicon(url) {
     img.onerror = (e) => reject(e);
     img.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}${sizeQuery}`;
   });
-}
-
-function placeCaretAtEnd(el) {
-  el.focus();
-  if (typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
 }
 
 
