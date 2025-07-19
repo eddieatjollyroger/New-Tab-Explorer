@@ -66,6 +66,12 @@ h2 {
   text-align: center;
 }
 
+.shortcut input.edit-label:focus,
+.shortcut input.edit-url:focus{
+    outline: none;
+
+}
+
 #clock {
   display: flex;
   justify-content: center;

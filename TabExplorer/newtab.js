@@ -269,12 +269,15 @@ function loadQuickShortcuts() {
 
       // Inline edit on double click (edit mode only)
       btn.addEventListener('dblclick', (e) => {
+
         if (!btn.classList.contains('edit-mode') || (btn.classList.contains('inline-edit'))) return;
+        if (Array.from(panel.childNodes).some(e => e.classList.contains('inline-edit'))) return;
 
         e.stopPropagation();
         btn.innerHTML = '';
 
         btn.classList.add('inline-edit');
+        btn.draggable = false;
 
         const labelInput = document.createElement('input');
         labelInput.className = 'edit-label';
@@ -286,13 +289,8 @@ function loadQuickShortcuts() {
         urlInput.value = cleanURL(urlStored);
 
         //Scrolls input to the end of line on mouse click               
-        urlInput.addEventListener('click', (e) => {
-                    if(e.detail == 1){ // If 1 click only select and scroll to end of text
-          urlInput.focus();
-          urlInput.scrollLeft = urlInput.scrollWidth;
-          urlInput.setSelectionRange(urlInput.value.length, urlInput.value.length);
-                    }
-        });
+        urlInput.addEventListener('click', (e) => handleTextInput(urlInput, e));
+        labelInput.addEventListener('click', (e) => handleTextInput(labelInput, e));
 
         const saveBtn = document.createElement('button');
         saveBtn.textContent = 'Save';
@@ -320,8 +318,8 @@ function loadQuickShortcuts() {
 
       btn.addEventListener('dragover', (e) => {
         e.preventDefault();
-        btn.style.border = '2px dashed var(--theme-color)'; 
-           });
+        btn.style.border = '2px dashed var(--theme-color)';
+      });
       btn.addEventListener('dragleave', () => {
         btn.style.border = '';
       });
@@ -600,6 +598,17 @@ function renderSavedGroups(savedGroups) {
 
     details.appendChild(tabList);
     container.appendChild(details);
+  }
+}
+
+function handleTextInput(textInput, event) {
+  if (event.detail == 1) { // If 1 click only select and scroll to end of text
+    textInput.focus();
+    textInput.scrollLeft = textInput.scrollWidth;
+    textInput.setSelectionRange(textInput.value.length, textInput.value.length);
+  }
+  if (event.detail == 2) { // Default select all behaviour (for firefox only)
+    textInput.setSelectionRange(0, textInput.value.length);
   }
 }
 
