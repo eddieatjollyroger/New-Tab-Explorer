@@ -66,21 +66,6 @@ h2 {
   text-align: center;
 }
 
-details {
-  background: #111;
-  border: 2px solid currentColor;
-  border-radius: 4px;
-  margin-bottom: 0.5em;
-  margin-left: 0.5em;
-  padding: 0.5em;
-  word-break: break-word;
-}
-
-details:hover {
-  background: #222;
-  border-color: #ff0;
-}
-
 #clock {
   display: flex;
   justify-content: center;
@@ -131,7 +116,6 @@ details:hover {
 }
 #search-input.placeholder {
 color: #666;
-border: 3px solid #666;
 }
 
 #search-input::after {
@@ -150,31 +134,67 @@ border: 3px solid #666;
   }
 }
 
+details {
+  position: relative;
+  padding-right: 2em;
+  background: #111;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  margin-bottom: 0.5em;
+  margin-left: 0.5em;
+  padding: 0.5em;
+  word-break: break-word;
+}
+
+details:hover {
+  background: #222;
+  border-color: #ff0;
+}
+
 summary {
+  position: relative;
   display: flex;
   cursor: pointer;
   font-size: 14px;
   margin: -0.5em;
   padding: 0.5em;
+  padding-right: 2em;
 }
-summary::after {
-  content: '';
-  width: 0; 
-  height: 0; 
-  border-top: 10px solid var(--theme-color);
-  border-inline: 7px solid transparent;
-  transition: 0.2s;
-  margin-top: 1px;
-  margin-bottom: auto;
-  margin-left: 4px;
-}
-
-details[open] > summary::after {
-  transform: rotate(-180deg);
-}
-
+ 
 summary::-webkit-details-marker {
   display: none;
+}
+.marker {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  width: 0;
+  height: 0;
+  border-top: 10px solid var(--theme-color);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  animation: pulse 1s infinite steps(2, start);
+  transition: 0.3s ease-in-out;
+  transform-origin: center;
+  pointer-events: auto;
+}
+
+/* Rotate and move when open */
+details[open] summary .marker {
+    border-top: none;
+  border-bottom: 10px solid var(--theme-color); /* triangle down */
+  top: auto;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
 }
 
 summary .favicon{
