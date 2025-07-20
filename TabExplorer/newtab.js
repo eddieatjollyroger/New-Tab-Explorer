@@ -24,11 +24,18 @@ function cycleTheme() {
   browser.storage.local.set({ theme: next });
 }
 
+const placeholders = [
+  "PRESS / TO SEARCH YOUR TABS",
+  "PRESS ENTER WHEN TYPING TO SEARCH THE WEB",
+  "DOUBLE CLICK A SHORTCUT WHILE IN EDIT MODE TO CHANGE IT",
+  "DRAG SHORTCUTS TO REORDER THEM",
+  "PRESS T TO SWITCH THE COLOR THEME"
+];
 
 const input = document.getElementById("search-input");
-let placeholderText = "PRESS / TO SEARCH YOUR TABS AND THE WEB";
-let placeholderIndex = 0;
-let placeholderInterval;
+let currentPlaceholder = "";
+let index = 0;
+let typingInterval;
 let isTyping = false;
 
 
@@ -231,11 +238,9 @@ function loadQuickShortcuts() {
       link.href = s.url;
 
       const icon = document.createElement('img');
-      icon.src = loadFavicon(s.url).then((img) => {
-        if (img.naturalHeight !== 16) {
-          icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
-        }
-        else {
+      icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
+      loadFavicon(s.url).then((img) => { 
+        if (img.naturalHeight == 16) {
           icon.src = '/favicongif.gif'
         }
       });
@@ -640,10 +645,12 @@ function cleanURL(urlIn) {
   return url.pathname.length > 1 ?
     url.hostname + url.pathname : url.hostname;
 }
+
 function fixPendingURL(url) {
   const formattedUrl = new URL(url);
   return formattedUrl;
 }
+
 function getFavIcon(tab) {
   if (tab.favIconUrl) {
     return tab.favIconUrl;
@@ -665,46 +672,57 @@ function loadFavicon(url) {
   });
 }
 
+//TYPEWRITING
+function getRandomPlaceholder() {
+  let next;
+  do {
+    next = placeholders[Math.floor(Math.random() * placeholders.length)];
+  } while (next === currentPlaceholder); // Avoid immediate repeat
+  return next;
+}
 
-function startPlaceholderTyping() {
-  if (input.textContent.trim() !== "" || document.activeElement === input) return;
+function typePlaceholder() {
+  if (isTyping || input.textContent.trim() !== "" || document.activeElement === input) return;
 
   isTyping = true;
   input.classList.add("placeholder");
 
-  placeholderInterval = setInterval(() => {
-    if (placeholderIndex < placeholderText.length) {
-      input.textContent += placeholderText.charAt(placeholderIndex);
-      placeholderIndex++;
-    } else {
-      clearInterval(placeholderInterval);
+  const placeholder = getRandomPlaceholder();
+
+  typingInterval = setInterval(() => {
+    input.textContent += placeholder[index++];
+    if (index >= placeholder.length) {
+      clearInterval(typingInterval);
+      isTyping = false;
+
       setTimeout(() => {
-        input.textContent = "";
-        placeholderIndex = 0;
-        startPlaceholderTyping();
-      }, 7500);
+        if (
+          document.activeElement !== input &&
+          input.textContent.trim() === placeholder
+        ) {
+          input.textContent = "";
+          index = 0;
+          typePlaceholder();
+        }
+      }, 3000);
     }
   }, 100);
 }
 
-function stopPlaceholderTyping() {
-  if (!isTyping) return;
-  clearInterval(placeholderInterval);
-  placeholderInterval = undefined; // actually clear Interval
-  input.textContent = "";
-  input.classList.remove("placeholder");
-  placeholderIndex = 0;
+function stopTyping() {
+  clearInterval(typingInterval);
   isTyping = false;
+  input.classList.remove("placeholder");
+  input.textContent = "";
+  index = 0;
 }
 
-// Start typing when not focused
-startPlaceholderTyping();
-
-input.addEventListener("focus", stopPlaceholderTyping);
+input.addEventListener("focus", stopTyping);
 input.addEventListener("blur", () => {
-  if (input.textContent.trim() === "") startPlaceholderTyping();
+  if (input.textContent.trim() === "") {
+    typePlaceholder();
+  }
 });
-input.addEventListener("input", () => {
-  if (input.textContent.trim() !== "") stopPlaceholderTyping();
-});
+
+typePlaceholder(); // kickstart
 
