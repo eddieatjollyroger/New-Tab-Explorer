@@ -229,12 +229,7 @@ function loadQuickShortcuts() {
       link.href = s.url;
 
       const icon = document.createElement('img');
-      icon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
-      loadFavicon(s.url).then((img) => {
-        if (img.naturalHeight == 16) {
-          icon.src = '/favicongif.gif'
-        }
-      });
+      icon.src = s.favIconUrl;
       icon.alt = '';
       link.prepend(icon);
 
@@ -294,8 +289,18 @@ function loadQuickShortcuts() {
           e.preventDefault();
           e.stopPropagation();
           s.label = labelInput.value.trim();
-          s.url = prependHttps(urlInput.value.trim());
+          s.url = urlInput.value.trim() ? prependHttps(urlInput.value.trim()) : urlInput.value.trim();
+
+          if(!s.label || !s.url) return alert('Please insert both a label and a URL.')
+          const loadingFavIcon = loadFavicon(s.url);
+          s.favIconUrl =`https://www.google.com/s2/favicons?domain=${encodeURIComponent(s.url)}`;
+ 
+          loadingFavIcon.then((img) => {
+        if (img.naturalHeight == 16) { // check if its the default google globe
+          s.favIconUrl = '/favicongif.gif'
+        }
           browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
+        });
         });
         btn.appendChild(labelInput);
         btn.appendChild(urlInput);
@@ -336,9 +341,9 @@ function loadQuickShortcuts() {
 
       panel.appendChild(btn);
     });
+    loadCursors(themeSelect.value);
   });
 }
-
 // Add shortcut
 document.getElementById('addQuickShortcut').addEventListener('click', () => {
   const label = document.getElementById('shortcutLabel').value.trim();
@@ -346,19 +351,28 @@ document.getElementById('addQuickShortcut').addEventListener('click', () => {
   const url = urlTrim ? prependHttps(urlTrim) : urlTrim;
 
   if (!label || !url) {
-    alert('Please enter both label and URL.');
+    alert('Please insert both a label and a URL.');
     return;
   }
-
+  let favIconUrl =`https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}`;
+  const loadingFavIcon = loadFavicon(url);
+    
   browser.storage.local.get('quickShortcuts').then(({ quickShortcuts }) => {
     const shortcuts = quickShortcuts || [];
-    shortcuts.push({ label, url });
+    
+    loadingFavIcon.then((img) => {
+        if (img.naturalHeight == 16) { // check if its the default google globe
+          favIconUrl = '/favicongif.gif'
+        }
+  
+    shortcuts.push({ label, url, favIconUrl});
     browser.storage.local.set({ quickShortcuts: shortcuts }).then(() => {
       document.getElementById('shortcutLabel').value = '';
       document.getElementById('shortcutUrl').value = '';
       loadQuickShortcuts();
     });
   });
+      })
 });
 
 // Toggle Edit mode
@@ -377,6 +391,7 @@ document.getElementById('editShortcutsBtn').addEventListener('click', () => {
 
   const inputs = document.getElementById('shortcutInputs');
   inputs.style.display = isEditMode ? 'flex' : 'none';
+  loadCursors(themeSelect.value); //RELOAD CURSORS FOR EDIT MENU
 });
 
 // Load on startup
@@ -676,13 +691,6 @@ input.addEventListener("blur", () => {
 });
 
 typePlaceholder(); // kickstart
-
-//On load set cursors again because many els are not yet loaded
-addEventListener("DOMContentLoaded", () => {
-  requestAnimationFrame(() => {
-    setTimeout(() => loadCursors(themeSelect.value, isOnLoad = true), 350);
-  });
-});
 
 function loadCursors(currentColor, isOnLoad = false) {
   const rgbColors = { green: "rgb(0, 255, 0)", amber: "rgb(255, 191, 0)", blue: "rgb(0,191,255)" };
