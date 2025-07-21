@@ -1,13 +1,15 @@
 * {
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
             scrollbar-color: #00ff00 #000;
 
-  }
+}
+
 :root {
   --theme-color: #0f0;
 }
+
 body {
   font-family: "Press Start 2P", monospace;
   background: #000;
@@ -15,7 +17,6 @@ body {
   margin: 0;
   padding: 1em;
   --main-bg-color: #0f0;
-  scrollbar-color: var(--theme-color) #000;
 }
 
 body.theme-green {
@@ -44,7 +45,6 @@ input {
   border: 2px solid currentColor;
   font-family: 'Press Start 2P', monospace;
   font-size: 12px;
-  cursor: pointer;
   padding: 4px 8px;
 }
 
@@ -66,6 +66,16 @@ h2 {
   text-align: center;
 }
 
+.shortcut input.edit-label,
+.shortcut input.edit-url {
+  background: #222;
+  border: 1px solid currentColor;
+  color: currentColor;
+  font-size: 0.9em;
+  padding: 0.2em;
+  margin-right: 0.3em;
+}
+
 .shortcut input.edit-label:focus,
 .shortcut input.edit-url:focus{
     outline: none;
@@ -76,9 +86,12 @@ h2 {
   display: flex;
   justify-content: center;
   font-size: 82px;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  padding: 1em;
   text-align: center;
+  transform: translateZ(0);
+  /* FIX demonic 1 pixel bug on macOS chromium */
+  will-change: transform;
+  /* FIX demonic 1 pixel bug on macOS chromium */
 }
 
 #button-grid {
@@ -96,7 +109,6 @@ h2 {
   border-bottom: 3px dotted currentColor;
 }
 
-
 #search-input {
   display: inline-block;
   justify-content: center;
@@ -105,23 +117,25 @@ h2 {
   font-family: inherit;
   font-size: 12px;
   padding: 0.5em;
-  margin-bottom: 2em;
   background: #111;
   border: 3px solid var(--theme-color);
   color: currentColor;
   text-decoration: var(--theme-color);
   caret-color: transparent;
 }
-#search-input:focus{
-  outline:none;
+
+#search-input:focus {
+  outline: none;
   border-color: var(--theme-color);
   border-width: 3px;
 }
-  #search-input br{
-  display:none;
+
+#search-input br {
+  display: none;
 }
+
 #search-input.placeholder {
-color: #666;
+  color: #666;
 }
 
 #search-input::after {
@@ -130,6 +144,7 @@ color: #666;
   position: relative;
   top: -3px;
 }
+
 .blink {
   animation: blink 1s steps(2, start) infinite;
 }
@@ -160,16 +175,16 @@ details:hover {
 summary {
   position: relative;
   display: flex;
-  cursor: pointer;
   font-size: 14px;
   margin: -0.5em;
   padding: 0.5em;
   padding-right: 2em;
 }
- 
+
 summary::-webkit-details-marker {
   display: none;
 }
+
 .marker {
   position: absolute;
   top: 0.5em;
@@ -187,23 +202,27 @@ summary::-webkit-details-marker {
 
 /* Rotate and move when open */
 details[open] summary .marker {
-    border-top: none;
-  border-bottom: 10px solid var(--theme-color); /* triangle down */
+  border-top: none;
+  border-bottom: 10px solid var(--theme-color);
+  /* triangle down */
   top: auto;
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.5;
     transform: scale(1.2);
   }
 }
 
-summary .favicon{
+summary .favicon {
   image-rendering: pixelated;
   margin-right: 0.5em;
   width: 16px;
@@ -220,7 +239,6 @@ summary .favicon{
   justify-content: center;
   padding: 0.25em 0.5em;
   margin: auto;
-  cursor: pointer;
   user-select: none;
 }
 
@@ -230,7 +248,6 @@ summary .favicon{
   align-items: center;
   padding: 0.25em 0.5em;
   margin-left: 1em;
-  cursor: pointer;
   user-select: none;
 }
 
@@ -244,20 +261,21 @@ summary .favicon{
   border: none;
   color: inherit;
   font: inherit;
-  cursor: pointer;
 }
-.pin-btn:hover{
-  background:black;
+
+.pin-btn:hover {
+  background: black;
 }
+
 .close-btn {
   margin-left: 0.5em;
-  background : transparent;
-  border : none;
-  color : #f00;
+  background: transparent;
+  border: none;
+  color: #f00;
   font: inherit;
-  cursor : pointer;
 }
-.close-btn:hover{
+
+.close-btn:hover {
   background: black;
 }
 
@@ -276,7 +294,6 @@ summary .favicon{
   font-family: 'Press Start 2P', monospace;
   font-size: 12px;
   padding: 4px 8px;
-  cursor: pointer;
   width: 160px;
   position: relative;
 }
@@ -311,6 +328,8 @@ summary .favicon{
 }
 
 #quickAccess {
+  display: inline;
+  /* FIX missalignment on chrome */
   margin-top: 1em;
   font-family: monospace;
   margin-bottom: 2em;
@@ -324,7 +343,7 @@ summary .favicon{
   align-items: center;
   gap: 0.5em;
   font-family: 'Press Start 2P', monospace;
-
+  padding-top: 2em;
 }
 
 #quickAccess h3 button {
@@ -333,7 +352,6 @@ summary .favicon{
   background: #111;
   border: 1px solid currentColor;
   color: currentColor;
-  cursor: pointer;
 }
 
 #quickAccess h3 button:hover {
@@ -349,7 +367,6 @@ summary .favicon{
   background: #111;
   border: 1px solid currentColor;
   color: currentColor;
-  cursor: pointer;
   font-size: 1.1em;
   border-radius: 0.2em;
   position: relative;
@@ -357,7 +374,7 @@ summary .favicon{
   word-break: break-word;
 }
 
-.shortcut a{
+.shortcut a {
   text-decoration: none;
   color: inherit;
   display: flex;
@@ -375,12 +392,12 @@ summary .favicon{
   border: none;
   color: #f00;
   font-weight: bold;
-  cursor: pointer;
 }
 
 .shortcut.edit-mode .deleteBtn {
   display: inline;
 }
+
 
 #shortcutPanel {
   display: flex;
@@ -401,7 +418,6 @@ summary .favicon{
   background: #111;
   border: 1px solid currentColor;
   color: currentColor;
-  cursor: pointer;
   border-radius: 3px;
   transition: background 0.2s, border-color 0.2s;
 }
@@ -436,11 +452,12 @@ summary .favicon{
   padding: 0.3em;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.9em;
-  border: 1px solid #666;
+  border: 1px solid var(--theme-color);
   background: #000;
   color: currentColor;
 }
-#shortcutInputs input:focus{
+
+#shortcutInputs input:focus {
   padding: 0.3em;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.9em;
@@ -456,33 +473,39 @@ summary .favicon{
   border: 1px solid currentColor;
   background: #111;
   color: currentColor;
-  cursor: pointer;
 }
 
 #shortcutInputs button:hover {
   background: #222;
   border-color: #ff0;
 }
-#collapseAll{
-  font-size:12px;
-  padding:0.25em 0.5em;
-  margin-left:0.5em;
-  margin-bottom:1em;
-  background:#111;
-  cursor:pointer;
+
+#collapseAll {
+  font-size: 12px;
+  padding: 0.25em 0.5em;
+  margin-left: 0.5em;
+  margin-bottom: 1em;
+  background: #111;
 }
-#expandAll{
-  font-size:12px;
-  padding:0.25em 0.5em;
-  margin-left:0.5em;
-  margin-bottom:1em;
-  background:#111;
-  cursor:pointer;
+
+#expandAll {
+  font-size: 12px;
+  padding: 0.25em 0.5em;
+  margin-left: 0.5em;
+  margin-bottom: 1em;
+  background: #111;
 }
-h3#footer{
+
+h3#footer {
   margin: 2EM;
-   text-align: center;
+  text-align: center;
 }
+
+h3#footer a{
+  color: var(--theme-color);
+  text-decoration: none;
+}
+
 @keyframes scroll {
   0% {
     background-position-y: 0;
@@ -498,9 +521,11 @@ h3#footer{
     scrollbar-color: var(--theme-color) #000;
   }
   #tabs {
+    display: inline;
     flex-direction: column;
   }
-    #search-input br{
-  display:none;
-}
+
+  #search-input br {
+    display: none;
+  }
 }
