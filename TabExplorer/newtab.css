@@ -441,14 +441,16 @@ summary .favicon {
   margin-bottom: auto;
 }
 
-#shortcutInputs {
+#shortcutInputs,
+#shortcutInputsSuggested {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
 }
 
-#shortcutInputs input {
+#shortcutInputs input,
+#shortcutInputsSuggested input {
   padding: 0.3em;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.9em;
@@ -457,7 +459,8 @@ summary .favicon {
   color: currentColor;
 }
 
-#shortcutInputs input:focus {
+#shortcutInputs input:focus,
+#shortcutInputsSuggested input:focus{
   padding: 0.3em;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.9em;
@@ -465,8 +468,8 @@ summary .favicon {
   background: #000;
   outline: none;
 }
-
-#shortcutInputs button {
+#shortcutInputs button,
+#shortcutInputsSuggested button {
   padding: 0.3em 0.6em;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.9em;
@@ -474,8 +477,8 @@ summary .favicon {
   background: #111;
   color: currentColor;
 }
-
-#shortcutInputs button:hover {
+#shortcutInputs button:hover,
+#shortcutInputsSuggested button:hover {
   background: #222;
   border-color: #ff0;
 }
