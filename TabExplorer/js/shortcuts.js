@@ -117,8 +117,8 @@ function updateShortcut(shortcut, shortcuts, loadQuickShortcuts) {
   loadingFavIcon.then((img) => {
     if (img.naturalHeight == 16) {
       shortcut.favIconUrl = '/favicongif.gif';
-      browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
     }
+    browser.storage.local.set({ quickShortcuts: shortcuts }).then(loadQuickShortcuts);
   });
 }
 

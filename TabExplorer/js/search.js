@@ -47,11 +47,11 @@ function handleKeyboardShortcuts(e) {
 
 function typePlaceholder() {
   const placeholders = [
-    "PRESS / TO SEARCH YOUR TABS",
+    "PRESS / TO START SEARCHING",
     "PRESS ENTER WHEN TYPING TO SEARCH THE WEB",
+    "PRESS T TO SWITCH THE COLOR THEME",
     "DOUBLE CLICK A SHORTCUT WHILE IN EDIT MODE TO CHANGE IT",
-    "DRAG SHORTCUTS TO REORDER THEM",
-    "PRESS T TO SWITCH THE COLOR THEME"
+    "DRAG SHORTCUTS TO REORDER THEM"
   ];
   const input = document.getElementById("search-input");
   let currentPlaceholder = "";

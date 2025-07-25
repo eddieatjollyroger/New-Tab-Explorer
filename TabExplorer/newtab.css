@@ -7,7 +7,7 @@
 }
 
 :root {
-  --theme-color: #0f0;
+  --theme-color: var(--theme-color, #000);
 }
 
 body {
@@ -34,6 +34,21 @@ body.theme-blue {
   background-color: #000;
   color: #00bfff;
   --theme-color: #00bfff;
+}
+
+body.theme-green,
+body.theme-amber,
+body.theme-blue {
+  animation: crtGlow 0.25s ease-in-out;
+}
+
+@keyframes crtGlow {
+  0% {
+    filter: brightness(0.2) blur(2px);
+  }
+  100% {
+    filter: brightness(1) blur(0);
+  }
 }
 
 button,
@@ -86,10 +101,7 @@ h2 {
   font-size: 82px;
   padding: 1em;
   text-align: center;
-  transform: translateZ(0);
-  /* FIX demonic 1 pixel bug on macOS chromium */
-  will-change: transform;
-  /* FIX demonic 1 pixel bug on macOS chromium */
+  z-index: -1;
 }
 
 #button-grid {
@@ -284,7 +296,7 @@ summary .favicon {
   image-rendering: pixelated;
 }
 
-#themeSelect {
+#themeSelect.custom-select {
   appearance: none;
   background: #000;
   border: 2px solid currentColor;
@@ -295,18 +307,40 @@ summary .favicon {
   width: 160px;
   position: relative;
 }
-
-#themeSelect:focus {
-  outline: none;
-  border-color: #fff;
+#themeSelect .selected {
+  padding: 8px;
+  margin: -8px;
+}
+#themeSelect .selected::after {
+  content: '˅';
+  float: right;
+  padding-left: 8px;
 }
 
-#themeSelect option {
+#themeSelect .options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
   background: #000;
-  color: inherit;
+  border: 2px solid currentColor;
+  z-index: 10;
+}
+
+#themeSelect .option {
+  padding: 4px 8px;
   font-family: 'Press Start 2P', monospace;
   font-size: 12px;
-  padding: 4px 8px;
+}
+
+#themeSelect .option:hover {
+  background: var(--theme-color);
+    outline: 1px dashed var(--theme-color);
+  color: #666;
+}
+
+#themeSelect .hidden {
+  display: none;
 }
 
 #scanlines {

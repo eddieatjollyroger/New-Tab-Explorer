@@ -40,7 +40,7 @@ function setLinkCursorFromSVGFile(svg, color) {
   let btns = Array.from(document.querySelectorAll('button'));
   btns = btns.concat(Array.from(document.querySelectorAll('a')));
   btns = btns.concat(Array.from(document.querySelectorAll('summary')));
-  btns = btns.concat(Array.from(document.querySelectorAll('select')));
+  btns = btns.concat((document.getElementById('themeSelect')));
   btns.forEach(btn => setCursorFromSVGFile(svg, btn, color))
 }
 

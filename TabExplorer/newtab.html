@@ -12,13 +12,14 @@
 
 <body>
   <div id="scanlines"></div>
-  <div class="selectWrapper">
-    <select id="themeSelect">
-      <option value="green">CRT Green</option>
-      <option value="amber">Amber</option>
-      <option value="blue">Blue</option>
-    </select>
+<div id="themeSelect" class="custom-select" tabindex="0">
+  <div class="selected" data-value="green">CRT Green</div>
+  <div class="options hidden">
+    <div class="option" data-value="green">CRT Green</div>
+    <div class="option" data-value="amber">Amber</div>
+    <div class="option" data-value="blue">Blue</div>
   </div>
+</div>
   <h1>TAB EXPLORER</h1>
 
   <div id="clock"></div>
@@ -55,6 +56,6 @@
   <div id="tabs"></div>
   <script type="module" src="js/main.js"></script>
   <h3 id="footer">GOT A SUGGESTION? -> <a href="mailto:hello@joaopacheco.me">HELLO@</a><a href="https://joaopacheco.me">JOAOPACHECO.ME</a></h3>
+  <div id="crtStartup" class="crt-startup"></div>
 </body>
-
 </html>
