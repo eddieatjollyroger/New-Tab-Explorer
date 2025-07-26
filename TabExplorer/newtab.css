@@ -2,8 +2,7 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-            scrollbar-color: #00ff00 #000;
-
+     scrollbar-width: none;
 }
 
 :root {
@@ -14,8 +13,9 @@ body {
   font-family: "Press Start 2P", monospace;
   background: #000;
   margin: 0;
-  padding: 1em;
+  padding: 1rem;
   cursor: none;
+  overflow: hidden; /* prevent body scroll */
 }
 
 body.theme-green {
@@ -315,6 +315,7 @@ summary .favicon {
   content: '˅';
   float: right;
   padding-left: 8px;
+  animation: pulse 4s infinite steps(2, start);
 }
 
 #themeSelect .options {
@@ -441,6 +442,8 @@ summary .favicon {
   justify-content: center;
   margin-bottom: 3px;
   font-family: 'Press Start 2P', monospace;
+  margin-left: 8rem;
+  margin-right: 8rem;
 }
 
 .shortcut-btn {
@@ -536,13 +539,90 @@ summary .favicon {
 }
 
 h3#footer {
-  margin: 2EM;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
   text-align: center;
 }
 
 h3#footer a{
   color: var(--theme-color);
   text-decoration: none;
+}
+
+.scroll-wrapper {
+  height: 100vh; /* or whatever container height */
+  overflow: hidden; /* hide native scroll */
+}
+
+.scroll-content {
+  height: 100%;
+  overflow-y: scroll;
+  padding-right: 10px; /* avoid text under thumb */
+  scrollbar-width: none; /* Firefox */
+}
+.scroll-content::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.scrollbar-track-vertical {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 15px;
+  height: 100vw;
+  background: var(--scroll-track-bg, transparent);
+  transition: opacity 0.2s ease;
+}
+.scrollbar-track-horizontal {
+  bottom: 0;
+  left: 0;
+  height: 15px;
+  width: 100%;
+  position: absolute;
+  background: var(--scroll-track-bg, transparent);
+  transition: opacity 0.2s ease;
+}
+
+.scrollbar-thumb-horizontal {
+  position: absolute;
+  height: 100%;
+  background: var(--theme-color, #0f0);
+  border-radius: 2px;
+  top: 0;
+  left: 0;
+  transition: background 0.2s, box-shadow 0.2s;
+  width: 100%; /* subtract vertical bar width */
+}
+.scrollbar-thumb-vertical {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background: var(--theme-color, #0f0);
+  border-radius: 2px;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+/* Glow effect on hover */
+.scrollbar-thumb-vertical:hover,
+.scrollbar-thumb-horizontal:hover {
+  box-shadow: 0 0 10px 2px var(--theme-color, lime);
+}
+.scrollbar-track-horizontal.hidden,
+.scrollbar-track-vertical.hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.scrollbar-track-horizontal.visible,
+.scrollbar-track-vertical.visible {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+body.no-select {
+  user-select: none;
 }
 
 @keyframes scroll {
@@ -557,8 +637,8 @@ h3#footer a{
 
 @media (max-width: 600px) {
   * {            
-    scrollbar-color: var(--theme-color) #000;
-  }
+   scrollbar-width: none;
+    }
   #tabs {
     display: inline;
     flex-direction: column;

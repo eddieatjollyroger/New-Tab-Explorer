@@ -4,6 +4,7 @@ import { initShortcuts } from './shortcuts.js';
 import { initSearch } from './search.js';
 import { initStorage } from './storage.js';
 import { initClock } from './clock.js';
+import { initCustomScrollbar } from './scrollbar.js';
 
 initTheme();
 initTabs();
@@ -11,3 +12,4 @@ initShortcuts();
 initSearch();
 initStorage();
 initClock(); 
+initCustomScrollbar();

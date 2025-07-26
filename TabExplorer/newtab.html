@@ -11,6 +11,9 @@
 </head>
 
 <body>
+  <div class="scroll-wrapper">
+  <div class="scroll-content">
+
   <div id="scanlines"></div>
 <div id="themeSelect" class="custom-select" tabindex="0">
   <div class="selected" data-value="green">CRT Green</div>
@@ -40,7 +43,7 @@
       <button id="addQuickShortcutSuggested">Add</button>
     </div>
   </div>
-  <h2>CURRENT OPEN TABS</h2>
+  <h2>CURRENTLY OPEN TABS</h2>
   <div id="button-grid">
     <button id="collapseAll">
       COLLAPSE ALL ([)</button>
@@ -57,5 +60,15 @@
   <script type="module" src="js/main.js"></script>
   <h3 id="footer">GOT A SUGGESTION? -> <a href="mailto:hello@joaopacheco.me">HELLO@</a><a href="https://joaopacheco.me">JOAOPACHECO.ME</a></h3>
   <div id="crtStartup" class="crt-startup"></div>
+  
+</div>
+  <div class="scrollbar-track-vertical hidden">
+    <div class="scrollbar-thumb-vertical"></div>
+  </div>
+  <div class="scrollbar-track-horizontal hidden">
+    <div class="scrollbar-thumb-horizontal"></div>
+  </div>
+</div>
+</div>
 </body>
 </html>

@@ -111,8 +111,9 @@ function loadCursorsBootAnimation() {
     if (startupEl) {
       setTimeout(() => {
         startupEl.remove(); // Clean up after animation
-      }, 500); // Match duration of animation
+      }, 250); // Match duration of animation
     }
+
 }
 function formatSelectValues(str) {
   switch (str) {
