@@ -25,6 +25,8 @@ function updateThumbs() {
   vTrack.classList.toggle('visible', vNeeded);
   vTrack.classList.toggle('hidden', !vNeeded);
 
+  content.style.paddingRight = vNeeded ? '15px' : '0px'; // Account for scrollbar
+
   // --- Horizontal Scrollbar ---
   const hRatio = clientWidth / scrollWidth;
   const hLeft = scrollLeft * hRatio;
@@ -33,10 +35,6 @@ function updateThumbs() {
   const effectiveWidth = document.body.offsetWidth; // includes padding/borders
   const availableScrollWidth = content.clientWidth; // excludes scrollbar
   const verticalBarWidth = effectiveWidth - availableScrollWidth; //size of custom vertical bar
-
-  console.log(effectiveWidth)
-  console.log(availableScrollWidth)
-  console.log(verticalBarWidth)
 
   let hThumbWidth = Math.max(clientWidth * hRatio, 20);
   if (vNeeded) {
@@ -86,7 +84,7 @@ function updateThumbs() {
     document.body.classList.remove('no-select');
   });
 
-  // Track click support (only vertical for now, you can replicate for horizontal if needed)
+  // Track click support
   vTrack.addEventListener('click', (e) => {
     if (e.target === vThumb) return;
     const rect = vThumb.getBoundingClientRect();
